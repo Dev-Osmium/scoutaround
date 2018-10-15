@@ -5,14 +5,13 @@
 #   gem 'sqlite3'
 #
 default: &default
-  adapter: postgresql
-  encoding: unicode
-  username: postgres
+  adapter: sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
+  timeout: 5000  
 
 development:
-  <<: *default
+  adapter: postgresql
+  encoding: unicode
   host: <%= ENV.fetch("DEV_DB_HOST") %>
   database: <%= ENV.fetch("DEV_DB_DATABASE") %>
   username: <%= ENV.fetch("DEV_DB_USERNAME") %>
