@@ -1,0 +1,4 @@
+- crumbtrail 'Payments'
+
+= render partial: 'payments/pre_setup' unless @unit.accepts_payments?
+= render partial: 'payments/charges' if @unit.accepts_payments?

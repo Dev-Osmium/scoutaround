@@ -1,9 +1,9 @@
 class UnitSettingsController < UnitContextController
   include UnitContext
-  layout 'narrow'
+
+  before_action :set_session_unit_id
 
   def index
-    session[:unit_id] = @unit.id # kludge alert: the Stripe callback URL can't be dynamic, so we need to cache the unit we're setting up
   end
 
   def show
@@ -11,8 +11,7 @@ class UnitSettingsController < UnitContextController
 
   def edit
     authorize @unit.becomes(Unit)
-    @body_classes = %w(admin)
-    session[:unit_id] = @unit.id # kludge alert: the Stripe callback URL can't be dynamic, so we need to cache the unit we're setting up
+    @body_classes = [:admin, params[:id]]
   end
 
   def update
@@ -28,5 +27,11 @@ class UnitSettingsController < UnitContextController
 
   def unit_params
     params.require(:unit).permit(:city, :state, :council, :district, :chartering_organization_name, :time_zone)
+  end
+
+  # this is necessary for Stripe setup. The return route from Stripe can't be dynamic, so
+  # we need to cache the id of the unit we're setting up
+  def set_session_unit_id
+    session[:unit_id] = @unit.id
   end
 end

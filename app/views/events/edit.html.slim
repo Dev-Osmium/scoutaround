@@ -1,36 +1,208 @@
+- EventType.unit = @unit
 - crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_path(@unit)
 - crumbtrail link_to t('events.title'), unit_events_path(@unit)
 - crumbtrail link_to @event.name, unit_event_path(@unit, @event)
 - crumbtrail 'Edit Details'
 
-- content_for :title do
+= content_for :title do
   h1 = @event.name
 
+
 .row
-  .col-md-6
+  .col-md-3
+    = render partial: 'events/nav'
+
+  .col-md-9
     = form_for [@unit.becomes(Unit), @event] do |f|
       .form-group
-        = f.label :name
-        = f.text_field :name, class: 'form-control'
+        .row
+          .col-md-3
+            = f.label :name
+          .col-md-9
+            = f.text_field :name, class: 'form-control'
 
+      ///////////////////////////////////
+      / event name & type
+      ///////////////////////////////////
       .form-group
-        = f.label :location
-        = f.text_field :location, class: 'form-control'
+        .row
+          .col-md-3 = f.label :event_type
+          .col-md-9 = f.select :event_type, EventType.all.collect { |t| [t.name, t.id] }, {}, class: 'form-control'
 
-      .form-group
-        = f.label :registration_closes_at
-        = f.text_field :registration_closes_at, class: 'form-control'
 
       .form-group
         .row
-          .col-md-6
+          .col-md-3
+            = f.label :location
+          .col-md-9
+            = f.text_field :location, class: 'form-control', autocomplete: 'off'
+            ul#location-suggestions(style="display: none;")
+
+      .form-group
+        .row
+          .col-md-3
             = f.label :starts_at
+          .col-md-3
             = f.text_field :starts_at, data: { provide: 'datepickerzzz' }, class: 'form-control'
 
-          .col-md-6
-            .form-group
-              = f.label :ends_at
-              = f.text_field :ends_at, data: { provide: 'datepickerzzz' }, class: 'form-control'
+      .form-group
+        .row
+          .col-md-3
+            = f.label :ends_at
+          .col-md-3
+            = f.text_field :ends_at, data: { provide: 'datepickerzzz' }, class: 'form-control'
+
+      .form-group
+        .row
+          .col-md-3
+            = f.label :registration_closes_at
+          .col-md-9
+            = f.text_field :registration_closes_at, class: 'form-control'
+
+      .form-group
+        .row
+          .col-md-3
+            = f.label :banner_image_url
+          .col-md-9
+            = f.text_field :banner_image_url, class: 'form-control'
+
+      .form-group
+        .row
+          .col-md-3
+            = f.label :description
+
+          .col-md-9
+            = f.trix_editor :description, class: 'form-control'
+
+      .form-group
+        .row
+          .col-md-3
+            = f.label :minimum_age
+          .col-md-3
+            = f.number_field :minimum_age, class: 'form-control'
+
+      .form-group
+        .row
+          .col-md-3
+            = f.label :attachments
+          .col-md-9
+            = f.file_field :attachments, multiple: true, direct_upload: true
 
       .form-group
         = f.submit 'Update', class: 'btn btn-primary'
+
+    h2(style="margin-top: 60px;") Danger Zone
+    .card.border-danger
+      .card-body
+        section
+          h6 Cancel Event
+          p
+            = link_to t('events.delete_title'), '#cancel', id: 'cancel-event-item', title: t('admin_only'), class: 'btn btn-danger', style: 'float: right; margin-left: 15px;', data: { toggle: 'modal' }
+
+            | Remove the event from the calendar and send out a cancellation notice to the entire unit. Once you cancel an event, there is no going back. Please be certain.
+
+- if !@event.published && EventPolicy.new(@current_user, @event).publish?
+  = button_to 'Publish', unit_event_publish_path(@unit, @event), method: :post, class: 'btn btn-primary', style: 'margin: 0 15px;'
+
+#cancel.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h5.modal-title = t('events.delete_title')
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      .modal-body
+        p Are you sure?
+      .modal-footer
+        = button_to 'Yes, Cancel Event', unit_event_path(@unit, @event), method: :delete, class: 'btn btn-danger'
+        = button_tag 'No, Never Mind', class: 'btn btn-secondary', data: { dismiss: 'modal' }
+
+
+css:
+  #location-suggestions {
+    position: absolute;
+    z-index: 100;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin: 3px 30px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #location-suggestions li {
+
+  }
+
+  #location-suggestions a {
+    display: inline-block;
+    padding: 6px 15px;
+  }
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=#{ ENV['GOOGLE_PLACES_API_KEY'] }&libraries=places"></script>
+
+javascript:
+  // look at https://developers.google.com/maps/documentation/javascript/places#find_place_from_query
+  // also https://developers.google.com/maps/documentation/javascript/examples/places-queryprediction
+
+  var service = new google.maps.places.AutocompleteService();
+
+  // $('#event_location').selectize({
+  //   render: {
+  //     option: function(item, escape) {
+  //       alert(item);
+  //     }
+  //   },
+  //   load: function(query, callback) {
+  //     if (!query.length) return callback();
+
+  //     service.getPlacePredictions({ input: query }, callback);
+  //   }
+  // });
+
+  function hideSuggestions() {
+    $('#location-suggestions').hide();
+  }
+
+  var displaySuggestions = function(predictions, status) {
+    if (status != google.maps.places.PlacesServiceStatus.OK) {
+      $('#location-suggestions').hide();
+      return;
+    }
+
+    if (predictions.length > 0) {
+      $('#location-suggestions').show();
+    } else {
+      $('#location-suggestions').hide();
+    }
+
+    predictions.forEach(function(prediction) {
+      $('#location-suggestions').append('<li><a class="suggestion" href="#" data-turbolinks="false">' + prediction.structured_formatting.main_text + '</a></li>');
+    });
+
+    $('a.suggestion').click(function() {
+      $('#event_location').val($(this).text());
+      $('#location-suggestions').hide();
+    });
+  }
+
+  $('#event_location').keydown(function(e) {
+    if (e.keyCode == 27) {
+      $('#location-suggestions').hide();
+      return;
+    }
+
+    var term = $(this).val();
+
+    if (term === '') {
+      $('#location-suggestions').hide();
+    }
+
+    $('#location-suggestions li').remove();
+    $('#location-suggestions').show();
+    service.getPlacePredictions({ input: term }, displaySuggestions);
+  });
+
+  $('#event_location').blur(function() {
+    window.setTimeout(hideSuggestions, 200);
+  });

@@ -1,0 +1,2 @@
+class LibraryFile < DocumentLibraryItem
+end

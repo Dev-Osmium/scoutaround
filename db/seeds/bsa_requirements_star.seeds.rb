@@ -1,4 +1,4 @@
-after :ranks do
+after :bsa_ranks do
   rank = Rank.find_by(name: 'Star')
 
   # requirement #1: do the time
@@ -35,3 +35,5 @@ after :ranks do
   # BOR
   Requirement.where(program_code: 'bsa', achievable: rank, name: 'Successfully complete your board of review for the Star rank.').first_or_create
 end
+
+print "BSA Star requirements\n"

@@ -1,0 +1,27 @@
+.row(style="margin: 0 -6rem; padding: 0 80px; border-bottom: 1px solid #aaa; margin-bottom: 1rem;")
+  .col-md-8
+    h1(style="margin-bottom: 12px;") = @event.name
+
+  .col-md-4(style="padding-top: 10px;")
+    - if @event.past?
+      - # do nothing
+    - elsif @event.require_registration && @registrant_names.count.positive?
+      div(style="padding-top: 4px;")
+        - if @action_required
+          a(data-toggle="tooltip" title="One of more submissions required. See checklists for details." href="#submissions")
+            i.fas.fa-exclamation-circle(style="color: gold; margin-right: 0.5rem;")
+        - else
+          i.fas.fa-check-circle(style="color: green; margin-right: 0.5rem;")
+
+        = "#{ @registrant_names.join(' and ') } #{ @registrant_names.count > 1 ? 'are' : 'is' } registered"
+        = link_to 'Change', '#', style: 'margin-left: 0.5rem; color: #888; font-size: 80%;'
+
+    - elsif @event.require_registration
+      = link_to 'Register', '#', class: 'btn btn-primary btn-nosquash', data: { toggle: 'modal', target: '#registrations'}
+
+      - if @event.minimum_age.present?
+        span.advisory(title="Age restrictions apply" style="color: #888; margin-left: 0.5rem;" data-toggle="tooltip")
+          i.fal.fa-exclamation-triangle
+
+    - else
+      = link_to 'Check In', '#', class: 'btn btn-primary'

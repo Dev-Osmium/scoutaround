@@ -17,6 +17,9 @@
     dt = t('achievements.approved_by.merit_badge')
     dd = @achievement.approved_by
 
+    dt = t('achievements.awarded_at')
+    dd = @achievement.awarded_at&.to_formatted_s(:scoutaround)
+
     dt Attachments
     - @achievement.attachments.each do |attachment|
       dd

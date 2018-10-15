@@ -1,45 +1,14 @@
 - crumbtrail link_to(UnitPresenter.unit_display_name(@unit), unit_path(@unit))
 - crumbtrail link_to t('units.settings.title', unit_type: @unit.type), "/#{ @unit.id }/settings"
-- crumbtrail 'Basic Information'
 
 .row
-  .col-md-12
-    = render partial: 'layouts/admin_badge'
-    h4 = t('units.settings.title', unit_type: @unit.type)
-    h1 = UnitPresenter.unit_display_name(@unit)
+  .col-md-3
+    = render partial: 'unit_settings/nav'
 
-    = form_for @unit.becomes(Unit), url: unit_unit_setting_path(@unit, :basic) do |f|
-      .form-group
-        = f.label :city
-        div
-          = f.text_field :city, class: 'form-control', style: 'width: 60%; float: left;'
-          = select_tag 'unit[state]', options_for_select(us_states.collect { |s| [ s[0], s[1] ] }, @unit.state), class: 'form-control', style: 'width: 39%; float: right;'
-      br
-      br
+  .col-md-1
 
-      .form-group
-        = f.label :council
-        = f.text_field :council, class: 'form-control'
-
-      .form-group
-        = f.label :district
-        = f.text_field :district, class: 'form-control'
-
-      .form-group
-        = f.label :chartering_organization_name
-        = f.text_field :chartering_organization_name, class: 'form-control'
-
-      .form-group
-        = f.label :time_zone
-        = f.select :time_zone, options_from_collection_for_select(TZInfo::Timezone.all, :identifier, :to_s, @unit.time_zone), {}, class: 'form-control'
-
-      br
-      br
-
-      .form-group
-        = f.submit t('units.update', unit_type: @unit.type), class: 'btn btn-primary'
-        |&nbsp;&nbsp;or&nbsp;&nbsp;
-        = link_to t('cancel'), "/#{ @unit.id }/settings", class: 'cancel'
+  .col-md-8
+    = render partial: "unit_settings/#{ params[:id] }"
 
 javascript:
   $(function () {

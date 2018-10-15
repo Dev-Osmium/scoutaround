@@ -14,18 +14,27 @@
  *= require_self
  *= require bootstrap-datepicker
  *= require bootstrap-tagsinput
+ *= require trix
+ *= require selectize
+ *= require selectize.default
  */
-
-@import "bootstrap";
 
 $blue:              #7D9E9C;
 $green:             #006B3F;
 $color_brand:       #BA160C; // eng
 $color_background:  #EBE9E8;
 $color_text:        rgb(33, 37, 41);
+$primary:           $color_brand;
+
+@import "bootstrap";
+
 
 @mixin sans-serif {
   font-family: 'Ringside Regular SSm A', 'Ringside Regular SSm B', helvetica, arial, sans-serif;
+}
+
+@mixin serif {
+  font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, serif;
 }
 
 @mixin uppercase {
@@ -36,13 +45,22 @@ $color_text:        rgb(33, 37, 41);
   font-size: 80%;
 }
 
+@mixin larger-text {
+  font-size: 120%;
+}
+
 body {
-  font-family: 'Sentinel SSm A', 'Sentinel SSm B', Georgia, serif;
+  @include sans-serif;
+  font-weight:      300;
   background-color: $color_background;
   padding-bottom:   30px;
   padding-left:     15px;
   padding-right:    15px;
   position:         relative;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @include serif;
 }
 
 .sidebar {
@@ -64,6 +82,10 @@ h1 {
 h3 {
   font-weight: 600;
   margin-bottom: 1rem;
+}
+
+h6 {
+  @include sans-serif;
 }
 
 h4 {
@@ -95,20 +117,8 @@ h4 {
   }
 }
 
-.btn {
-  font-weight: 700;
-}
-
-.btn-primary {
-  // background-color: rgb(182, 24, 24);
-  background-color: $blue;
-  border-color: darken($blue, 10%);
+.btn-nosquash {
   min-width: 12rem;
-
-  &:hover {
-    background-color: darken($blue, 10%);
-    border-color: darken($blue, 10%);
-  }
 }
 
 a {
@@ -117,6 +127,10 @@ a {
 
   &:hover {
     color: rgb(172, 14, 14);
+  }
+
+  svg {
+    margin-right: 0.5rem;
   }
 }
 
@@ -177,7 +191,7 @@ header#primary {
 
       a {
         color: #333;
-        font-weight: 600;
+        font-weight: 400;
         display: inline-block;
         padding: 1rem;
         @include sans-serif;
@@ -220,10 +234,8 @@ main {
 }
 
 // label {
-//   font-family: 'Ringside Regular SSm A', 'Ringside Regular SSm B', helvetica, arial, sans-serif;
-//   text-transform: uppercase;
-//   font-size: 0.85rem;
-//   font-weight: 300;
+  // text-transform: uppercase;
+  // font-weight: 600;
 // }
 
 #roster {
@@ -273,6 +285,12 @@ body.memberships.index {
 
 body.events.index {
   #unit-nav-events {
+    @include active_link;
+  }
+}
+
+body.announcements.index {
+  #unit-nav-announcements {
     @include active_link;
   }
 }
@@ -380,28 +398,29 @@ table.checklist {
   }
 }
 
-.card-header {
-  background: darken($color_background, 30%);
-  border-color: darken($color_background, 30%);
-  color: #fff;
-  font-weight: 600;
+// .card-header {
+//   background: darken($color_background, 30%);
+//   border-color: darken($color_background, 30%);
+//   color: #fff;
+//   font-weight: 600;
 
-  .badge {
-    background: #fff !important;
-    color: darken($color_background, 50%);
-  }
-}
+//   .badge {
+//     background: #fff !important;
+//     color: darken($color_background, 50%);
+//   }
+// }
 
 .admin.dropdown {
-  position: absolute;
-  top: 15px;
-  right: 15px;
+  // position: absolute;
+  // top: 15px;
+  // right: 15px;
+  float: right;
 
   a.glyph {
     display: inline-block;
     text-align: center;
     border: 1px solid darken($color_background, 30%);
-    border-radius: 50%;
+    border-radius: 5px;
     width: 30px;
     height: 30px;
     position: relative;
@@ -414,8 +433,8 @@ table.checklist {
     }
 
     &:hover {
-      background-color: $color_brand;
-      border-color: darken($color_brand, 10%);
+      background-color: $blue;
+      border-color: darken($blue, 10%);
 
       svg {
         color: $white;
@@ -424,7 +443,7 @@ table.checklist {
   }
 
   .dropdown-item svg {
-    color: $color_brand;
+    color: $blue;
     margin: 0 0.5rem;
     width: 16px;
   }
@@ -441,18 +460,31 @@ ul.documents {
   padding: 0;
 
   li {
-    display: inline-block;
-    margin: 1rem;
-    width: 25%;
-    float: left;
-    // text-align: center;
+    border-bottom: 1px solid #ddd;
 
-    img {
-      border: 1px solid #ddd;
-      box-shadow: 0, 0, 5px, 5px, rgba(0, 0, 0, 0.1);
-      margin-bottom: 1rem;
+    a {
+      display: inline-block;
+      padding: 1rem 0;
+    }
+
+    &:first-child {
+      border-top: 1px solid #ddd;
     }
   }
+
+  // li {
+  //   display: inline-block;
+  //   margin: 1rem;
+  //   width: 25%;
+  //   float: left;
+  //   // text-align: center;
+
+  //   img {
+  //     border: 1px solid #ddd;
+  //     box-shadow: 0, 0, 5px, 5px, rgba(0, 0, 0, 0.1);
+  //     margin-bottom: 1rem;
+  //   }
+  // }
 }
 
 ul.roster {
@@ -515,6 +547,11 @@ $colors: (
 
 section {
   margin-bottom: 4rem;
+
+  &.ruled {
+    border-top: 1px solid $color_background;
+    padding-top: 4rem;
+  }
 }
 
 ul.message-list {
@@ -621,7 +658,7 @@ table.calendar {
     margin-right: 0rem;
     color: $color_brand;
     display: inline-block;
-    padding: 0.2rem;
+    // padding: 0.2rem;
     position: relative;
     top: -6px;
   }
@@ -650,7 +687,7 @@ table.calendar {
     white-space: nowrap;
     overflow-x: hidden;
     font-size: 12px;
-    width: 100%;
+    // width: 100%;
     margin: 1px 0;
     padding: 4px 0.5rem;
     @include sans-serif;
@@ -678,6 +715,11 @@ table.calendar {
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
       margin-right: 2px;
+    }
+
+    &.unpublished {
+      background-color: #ff69b4;
+      color: #fff;
     }
   }
 } // table.calendar
@@ -758,6 +800,16 @@ ol.requirements li.completed > ol {
   cursor: default;
 }
 
+body.admin main {
+  border-top: 10px solid $color_brand;
+}
+
+body.announcements.index {
+  #nav-item-announcements a {
+    @include active_nav;
+  }
+}
+
 body.events.index {
   #nav-item-events a {
     @include active_nav;
@@ -776,7 +828,7 @@ body.units.show {
   }
 }
 
-body.units.edit {
+body.unit_settings.edit {
   #nav-item-unit-settings a {
     @include active_nav;
   }
@@ -864,10 +916,6 @@ body.memberships.index {
   left: 0;
   height: 12px;
   border-radius: 6px;
-}
-
-label {
-  font-weight: 600;
 }
 
 a.unregister {
@@ -966,6 +1014,7 @@ label.error {
   .role {
     font-size: 70%;
     color: darken($color_background, 30%);
+    white-space: nowrap;
   }
 
   .link {
@@ -1043,8 +1092,13 @@ a.add-item svg {
   padding: 0 0.5rem;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"], input[type="radio"] {
   margin-right: 0.5rem;
+}
+
+.form-group h6 {
+  @include sans-serif;
+  font-weight: 700;
 }
 
 tr.event {
@@ -1088,4 +1142,237 @@ tr.section-heading {
 
 th.numeric, td.numeric {
   text-align: right;
+}
+
+.form-control.stacked {
+  margin-bottom: 0.5rem;
+}
+
+.banner {
+  height: 300px;
+  margin: -3rem -6rem 1rem -6rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 3rem 6rem;
+
+  h1 {
+    color: $white;
+  }
+}
+
+.form-control {
+  font-weight: 300;
+}
+
+#event-details {
+  font-size: 14px;
+  border-left: 1px solid $color_background;
+
+  h5 {
+    @include sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  .details {
+    margin-bottom: 2rem;
+  }
+}
+
+#map {
+  margin-top: 3rem;
+}
+
+.dropdown-menu {
+  max-width: 300px;
+}
+
+#description {
+  // div, li {
+  //   font-size: 120%;
+  //   line-height: 160%;
+  // }
+
+  ul {
+    list-style-position: outside;
+    padding-left: 0;
+  }
+}
+
+a.glyphed span.glyph {
+  display: inline-block;
+  width: 28px;
+}
+
+
+body.unit_settings {
+  &.basic {
+    #nav-basic a {
+      @include active_nav;
+    }
+  }
+
+  &.payments {
+    #nav-payments a {
+      @include active_nav;
+    }
+  }
+}
+
+h2.subtitle {
+  margin-top: -3rem;
+  margin-bottom: 3rem;
+  @include sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+}
+
+@mixin active_button_group {
+  background-color: $color_brand;
+  color: $white;
+}
+
+// .btn-group .btn-secondary {
+//   background-color: lighten($blue, 20%);
+//   color: $black;
+// }
+
+body.achievements.roster {
+  #toggle_roster {
+    @include active_button_group;
+  }
+}
+
+body.achievements.pending {
+  #toggle_pending {
+    @include active_button_group;
+  }
+}
+
+body.achievements.shopping_list {
+  #toggle_shopping_list {
+    @include active_button_group;
+  }
+}
+
+ul#announcements {
+  li {
+    border-top: 1px solid $color_background;
+  }
+}
+
+.card-body {
+  section {
+    margin-bottom: 0;
+  }
+}
+
+.modal-lg {
+  max-width: 860px;
+
+  .modal-header, .modal-body, .modal-footer {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+.alert {
+  margin: 0 -15px;
+
+  .container {
+    max-width: 1332px;
+  }
+}
+
+.alert-warning {
+  background-color: #fcc200;
+  color: darken(#fcc200, 40%);
+}
+
+tr.month {
+  // background-color: lighten($color_background, 5%);
+  font-weight: 700;
+
+  td:first-child {
+    // border-left: 6px solid lighten($color_background, 5%);
+    padding-left: 0;
+  }
+}
+
+tr.event {
+  border-left: 6px solid #fff;
+
+  &.unpublished {
+    background: repeating-linear-gradient(
+      -45deg,
+      #fff,
+      #fff 10px,
+      #e4e4e4 10px,
+      #e4e4e4 11px
+    );
+  }
+}
+
+tr.camping {
+  border-color: SIENNA;
+}
+
+tr.award_ceremony {
+  border-color: SEAGREEN;
+}
+
+tr.afloat {
+  border-color: CORNFLOWERBLUE;
+}
+
+tr.unit_meeting {
+  border-color: LIGHTBLUE;
+}
+
+tr.football {
+  border-color: FUCHSIA;
+}
+
+tr.hike {
+  border-color: CRIMSON;
+}
+
+tr.fundraiser {
+  border-color: #85bb65;
+}
+
+tr.community_service {
+  border-color: GOLDENROD;
+}
+
+tr.training {
+  border-color: DARKGREEN;
+}
+
+body.events.show {
+  #overview {
+    @include serif;
+    @include larger-text;
+    padding-right: 30px
+  }
+}
+
+.actions ul {
+  list-style: none;
+  padding-left: 0;
+
+  li {
+    padding: 0.5rem 0;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }

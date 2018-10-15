@@ -31,4 +31,4 @@ li(class="#{class_name}")
   - # recurse down a level if needed
   - if requirement.requirements.present?
     ol.requirements(type="#{ list_type }")
-      = render partial: 'requirements/show/requirement', collection: requirement.requirements
+      = render partial: 'achievements/requirement', collection: requirement.requirements

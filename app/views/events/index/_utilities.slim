@@ -1,21 +1,177 @@
-.admin.dropdown
-  = link_to '#', data: { toggle: 'dropdown' }, class: 'glyph' do
-    span(data-toggle="tooltip" title="#{t('actions_and_options')}")
-      = render partial: 'layouts/campfire'
+- EventType.unit = @unit
 
-  .dropdown-menu.dropdown-menu-right
-    -if @current_user_is_admin
-      = link_to new_unit_event_path(@unit), class: 'dropdown-item admin', title: t('admin_only') do
-        i.fa-tree.fal
-        = t('events.add')
+- values = ''
+- (7..23).step(1).each do |hour|
+  - meridian = hour >= 12 ? 'PM' : 'AM'
+  - display_hour = (hour > 12) ? hour - 12 : hour
+  - values += "<option value=\"#{ format('%02d', hour) }:00\">#{ display_hour }:00 #{ meridian }</option>"
+  - values += "<option value=\"#{ format('%02d', hour) }:30\">#{ display_hour }:30 #{ meridian }</option>"
 
-      .dropdown-divider
+#new.modal.fade
+  = form_for @event, url: unit_events_path(@unit) do |f|
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          h5.modal-title = t('events.add')
+          button.close(data-dismiss="modal")
+            span &times;          
 
-    = link_to t('events.view.calendar'), unit_events_path(@unit, view: 'calendar'), class: 'dropdown-item' if @view != 'calendar'
-    = link_to t('events.view.list'),     unit_events_path(@unit, view: 'list'),     class: 'dropdown-item' if @view == 'calendar'
-    = link_to t('events.feed'),          unit_events_path(@unit, format: :ics),     class: 'dropdown-item'
+        .modal-body
+          ///////////////////////////////////
+          / event name & type
+          ///////////////////////////////////        
+          .form-group
+            .row
+              .col-md-3 = f.label :event_type
+              .col-md-9 = f.select :event_type, EventType.all.collect { |t| [t.name, t.id] }, {}, class: 'form-control'
+
+          .form-group
+            .row
+              .col-md-3 = f.label :name
+              .col-md-9 = f.text_field :name, class: 'form-control'
+
+          ///////////////////////////////////
+          / location & address
+          ///////////////////////////////////
+          .form-group
+            .row
+              .col-md-3 = f.label :location
+              .col-md-9 = f.text_field :location, class: 'form-control stacked', placeholder: 'Venue name'
+
+            .row
+              .col-md-3
+              .col-md-9 = f.text_field :address, class: 'form-control stacked', placeholder: 'Address'
+
+            .row
+              .col-md-3
+              .col-md-5
+                = f.text_field :city, class: 'form-control', placeholder: 'City'
+              .col-md-2
+                = f.text_field :state, class: 'form-control', placeholder: 'State'
+              .col-md-2
+                = f.text_field :postal_code, class: 'form-control', placeholder: 'Zip'
+
+          ///////////////////////////////////
+          / start & end dates
+          ///////////////////////////////////
+          .form-group
+            .row
+              .col-md-3 = f.label :starts_at
+              .col-md-5 = f.text_field :starts_at, value: @event.starts_at.strftime('%d %B %Y'), class: 'form-control datepicker'
+              .col-md-4
+                / = select_tag(:starts_at_time, raw(values))
+                = select_time_tag(:starts_at_time, { class: 'form-control' }, { display_all_day_option: true })
+
+          .form-group
+            .row
+              .col-md-3 = f.label :ends_at
+              .col-md-5 = f.text_field :ends_at, value: @event.starts_at.strftime('%d %B %Y'), class: 'form-control datepicker'
+              .col-md-4
+                #ends-at-time-details(style="display:none")
+                  = select_time_tag(:ends_at_time, class: 'form-control')
+
+          ///////////////////////////////////
+          / repeat
+          ///////////////////////////////////
+          .form-group
+            .row
+              .col-md-3 = label_tag :repeat
+              .col-md-5
+                select(id='repeat' name='repeat' class='form-control')
+                  option(value='never') Never
+                  option(value='weekly') Weekly
+
+          #repeat-details(style="display:none")
+            .form-group
+              = label_tag :end_repeat
+              = text_field_tag :repeat_until, 6.months.from_now.strftime('%d %B %Y'), class: 'form-control datepicker'
+
+          ///////////////////////////////////
+          / minimum age
+          ///////////////////////////////////
+          .form-group
+            .row
+              .col-md-3 = f.label :minimum_age
+              .col-md-5 = f.select :minimum_age, [['No minumum', nil], ['13', 13], ['14', 14], ['15', 15], ['16', 16], ['17', 17], ['18', 18]], {}, class: 'form-control'
+
+          ///////////////////////////////////
+          / registration
+          ///////////////////////////////////
+          .form-group
+            = f.check_box :require_registration
+            = f.label :require_registration
+
+          #registration-details(style="display:none;")
+            .form-group
+              .row
+                .col-md-3 = f.label :registration_closes_at, 'Registration closes'
+                .col-md-5 = f.text_field :registration_closes_at, value: @event.registration_closes_at.strftime('%d %B %Y'), class: 'form-control datepicker'
+
+          .form-group
+            = f.label :attachments
+            = f.file_field :attachments, multiple: true, direct_upload: true
+
+
+        .modal-footer
+          .form-group
+            = f.check_box :published
+            = f.label :published, style: 'margin-right: 15px;'
+
+            = f.submit t('events.add'), class: 'btn btn-primary'
+            | &nbsp;&nbsp;
+            = t('or')
+            | &nbsp;&nbsp;
+            = link_to t('cancel'), '#', class: 'cancel', data: { dismiss: 'modal' }
 
 javascript:
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip();
+  $(document).ready(function(){
+    $('.datepicker').datepicker({
+      format: "d MM yyyy"
+    });
+  });
+
+  $('#event_require_registration').change(function() {
+    $('#registration-details').toggle(250);
+  });
+
+  // if starts_at_time is all day, then hide the ends_at time, since it's
+  // assumed to also be all-day
+  $('#starts_at_time').change(function() {
+    var startsAtTime = $('#starts_at_time option:selected').val();
+    if (startsAtTime == "0") {
+      $('#ends-at-time-details').hide(250);
+    } else {
+      $('#ends-at-time-details').show(250);
+    }
+  });
+
+  $('#event_starts_at').change(function() {
+    var startsAt = $(this).val();
+    var endsAt = $('#event_ends_at').val();
+    var registrationClosesAt = $('#event_registration_closes_at').val();
+    var startsAtDate = Date.parse(startsAt);
+    var endsAtDate = Date.parse(endsAt);
+    var registrationClosesAtDate = Date.parse(registrationClosesAt);
+
+    // is the end date before the start date?
+    // if so, let's change it
+    if (endsAtDate < startsAtDate) {
+      $('#event_ends_at').val(startsAt);
+    }
+
+    // similarly, if the registration close date is after the start date,
+    // then change it, too
+    if (registrationClosesAtDate > startsAtDate) {
+      registrationClosesAtDate = startsAtDate - (24 * 60 * 60 * 1000 * 5);
+      $('#event_registration_closes_at').val(moment(registrationClosesAtDate).format('DD MMMM YYYY'));
+    }
+  });
+
+  $('#repeat').change(function() {
+    var repeat = $('#repeat').val();
+    if (repeat == 'never') {
+      $('#repeat-details').hide(250);
+    } else {
+      $('#repeat-details').show(250);
+    }
   });

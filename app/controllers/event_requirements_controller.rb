@@ -3,6 +3,11 @@ class EventRequirementsController < EventContextController
   before_action :find_event
   before_action :find_unit
 
+  def index
+    @event_requirements = @event.event_requirements
+    @body_classes = [:admin]
+  end
+
   def new
     @event_requirement = @event.event_requirements.new
     @event_requirement.due_at = @event.starts_at - 1.week

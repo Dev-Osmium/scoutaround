@@ -1,0 +1,12 @@
+ul.ruled
+  li#nav-basic     = link_to 'Basic Information',   edit_unit_unit_setting_path(@unit, :basic)
+  li#nav-sharing   = link_to 'Document Sharing',    unit_magic_links_path(@unit)
+  li#nav-positions = link_to 'Unit Positions',      unit_unit_positions_path(@unit)
+  - if @unit.accepts_payments?
+    li#nav-payments = link_to 'Payments', edit_unit_unit_setting_path(@unit, :payments)
+  - else
+    li#nav-payments = link_to t('units.settings.set_up_payments'), edit_unit_unit_setting_path(@unit, :payments)
+  li#nav-export = link_to 'Export Roster',    unit_memberships_path(@unit, format: :csv)
+  li#nav-import = link_to 'Import Member Spreadsheet', new_unit_membership_import_path(@unit)
+  - if ENV['ENFORCE_EXPIRATIONS'].present?
+    li = link_to 'Subscription', unit_subscription_path(@unit)

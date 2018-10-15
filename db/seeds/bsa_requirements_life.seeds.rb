@@ -1,4 +1,4 @@
-after :ranks do
+after :bsa_ranks do
   rank = Rank.find_by(name: 'Life')
   TenureRequirement.where(program_code: 'bsa', achievable: rank, param: 6.months, precursor: Rank.find_by(name: 'Star')).first_or_create
 
@@ -41,3 +41,5 @@ after :ranks do
   # 8 BOR
   Requirement.where(program_code: 'bsa', achievable: rank, name: 'Successfully complete your board of review for the Star rank.').first_or_create
 end
+
+print "BSA Life requirements\n"

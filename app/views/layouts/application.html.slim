@@ -7,10 +7,10 @@ html
 
     / See https://content-security-policy.com/
     / The following line is super-permissive and, hence, unsafe
-    meta(http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: *")
+    / meta(http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: *")
 
     / Use the following line instead
-    meta(http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: *; style-src 'self' 'unsafe-inline' https://cloud.typography.com https://apm.scoutapp.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://pro.fontawesome.com https://apm.scoutapp.com; connect-src 'self' https://scoutaround-prod.s3.amazonaws.com https://api.stripe.com https://cloud.typography.com; frame-src 'self' https://js.stripe.com; font-src 'self' data:")
+    meta(http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: *; style-src 'self' 'unsafe-inline' https://cloud.typography.com https://use.typekit.net https://p.typekit.net https://apm.scoutapp.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://pro.fontawesome.com https://apm.scoutapp.com https://maps.googleapis.com; connect-src 'self' https://scoutaround-prod.s3.amazonaws.com https://api.stripe.com https://cloud.typography.com https://maps.googleapis.com; frame-src 'self' https://js.stripe.com https://www.google.com; font-src 'self' https://use.typekit.net data:")
 
     / <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com">
     = csrf_meta_tags
@@ -22,11 +22,23 @@ html
     = javascript_include_tag 'https://js.stripe.com/v3/'
 
   body(class="authenticated #{additional_classes}")
-    - header_partial = @unit.present? ? 'header_unit_context' : 'header'
-    = render partial: "layouts/#{ header_partial }"
+    - if flash[:notice].present? || flash[:alert].present? || flash[:error].present?
+      #alerts
+        - if flash[:notice]
+          .alert.alert-dark
+            .container
+              = notice
+        - if flash[:alert]
+          .alert.alert-warning
+            .container
+              = alert
+        - if flash[:error].present?
+          .alert.alert-danger
+            .container
+              = flash[:error]
 
-    main
-      - if @unit.present? && @current_user_is_admin && @unit.subscription_expired?
+    - if @unit.present? && @current_user_is_admin && @unit.subscription_expired?
+      #alerts
         .alert.alert-warning
           i.fa-exclamation-triangle.far
           | &nbsp;
@@ -35,21 +47,19 @@ html
             | &nbsp;
             = link_to 'Renew now', unit_subscription_path(@unit.id)
 
-      - if flash[:notice].present? || flash[:alert].present? || flash[:error].present?
-        #alerts
-          - if flash[:notice]
-            .notice.alert.alert-success
-              = notice
-          - if flash[:alert]
-            .alert.alert.alert-warning
-              = alert
-          - if flash[:error].present?
-            .alert.alert-danger
-              = flash[:error]
+    = render partial: @unit.present? ? 'layouts/header_unit_context' : 'layouts/header'
+    main
+      - if content_for?(:banner)
+        .row
+          .col-md-12
+            = yield :banner
 
       .row
-        .col-md-12
+        .col-md-7
           = yield :title
+
+        .col-md-5(style="text-align:right; float: right;")
+          = yield :actions
 
       .row
 
@@ -71,3 +81,29 @@ html
     $(document).on("turbolinks:load", function() {
       return FontAwesome.dom.i2svg();
     });
+
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+
+  - if @needs_admin_coaching
+    javascript:
+      $(document).ready(function() {
+        $('h1').popover({
+          title: "You're in an admin-only view",
+          trigger: 'manual',
+          placement: 'top',
+          content: "Because you have admin permissions for this unit, you're able to access this admin-only view. The red line tells you you're in an admin-only area."
+        }).popover('show');
+      });

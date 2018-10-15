@@ -1,0 +1,19 @@
+#registrations.modal.fade
+  .modal-dialog.modal-md
+    .modal-content
+      / = form_for [@unit.becomes(Unit), @event, @event.messages.new], remote: true do |f|
+      = form_tag unit_event_event_registrations_path(@unit, @event)
+        .modal-header
+          h5.modal-title Registrations
+          button.close(data-dismiss="modal")
+            span &times;
+        .modal-body
+          - @current_user.family.each do |user|
+            - next unless user.member_of?(@unit)
+            .form-group
+              = check_box_tag 'user_id[]', user.id, @family_registrations.map(&:user).include?(user), id: "user_id_#{ user.id }"
+              = label_tag "user_id_#{ user.id }", user.preferred_name
+
+        .modal-footer
+          button.btn.btn-secondary(data-dismiss="modal") = t('cancel')
+          = submit_tag 'Send', class: 'btn btn-primary'

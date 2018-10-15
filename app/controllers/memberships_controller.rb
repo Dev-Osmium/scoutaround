@@ -32,7 +32,12 @@ class MembershipsController < UnitContextController
   end
 
   def show
-    @registrations = @unit.event_registrations.where(user_id: @membership.user_id)
+    @view = params[:view] || 'future'
+    if @view == 'future'
+      @registrations = @unit.event_registrations.future.where(user_id: @membership.user_id)
+    elsif @view == 'all_registrations'
+      @registrations = @unit.event_registrations.where(user_id: @membership.user_id)
+    end
   end
 
   def edit
@@ -69,7 +74,7 @@ class MembershipsController < UnitContextController
 
 
       flash[:notice] = t('memberships.updated', full_name: @membership.user.full_name)
-      redirect_to membership_path(@membership)
+      redirect_to unit_membership_path(@unit, @membership)
     else
       redirect_to edit_unit_membership_path(@unit, @membership)
     end
@@ -154,7 +159,7 @@ class MembershipsController < UnitContextController
       :unit_position_id,
       user_attributes: [:id, :rank_id, :first_name, :last_name,
         :nickname, :post_nominal, :type, :email, :phone, :avatar,
-        guardeeships_attributes: [:id, :guardian_id, :_destroy]
+        :date_of_birth, guardeeships_attributes: [:id, :guardian_id, :_destroy]
       ]
     )
   end

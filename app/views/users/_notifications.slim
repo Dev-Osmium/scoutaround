@@ -1,0 +1,36 @@
+h1 Notifications
+
+= form_for @user.becomes(User), method: :put do |f|
+  .form-group
+    h6 Unit announcements
+
+    = f.radio_button :unit_announcement_notifications, :always
+    = f.label :unit_announcement_notifications_always, 'Always'
+
+    br
+    = f.radio_button :unit_announcement_notifications, :pinged
+    = f.label :unit_announcement_notifications_ping, 'When pinged'
+
+  .form-group
+    h6 Event announcements
+
+    = f.radio_button :event_announcement_notifications, :always
+    = f.label :event_announcement_notifications, 'Always'
+
+    br
+    = f.radio_button :event_announcement_notifications, :pinged
+    = f.label :event_announcement_notifications, 'When pinged'
+
+  .form-group
+    h6 Notification method
+
+    = f.radio_button :notification_method, :email
+    = f.label :notification_method_email, 'Email'
+
+    br
+    = f.radio_button :notification_method, :email_and_sms
+    = f.label :notification_method_email_and_sms, 'Email and SMS'
+
+  .form-group
+    = f.submit "Update", class: 'btn btn-primary'
+

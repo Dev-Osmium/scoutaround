@@ -36,14 +36,23 @@ module ApplicationHelper
     result
   end
 
-  def stripe_connect_path
+  def stripe_connect_path(unit)
     [
       'https://connect.stripe.com/express/oauth/authorize?client_id=',
       ENV['STRIPE_CONNECT_CLIENT_ID']
     ].join
   end
 
-  def select_time(name, html_options = {}, tag_options = {})
+  def generate_crypt
+    len   = ActiveSupport::MessageEncryptor.key_len
+    # salt  = SecureRandom.random_bytes(len)
+    salt = 'salt'
+    key   = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key(salt, len) # => "\x89\xE0\x156\xAC..."
+    crypt = ActiveSupport::MessageEncryptor.new(key)
+    crypt
+  end
+
+  def select_time_tag(name, html_options = {}, tag_options = {})
     values = ''
     values += '<option value="0">All day</option>' if tag_options[:display_all_day_option]
     (7..23).step(1).each do |hour|
@@ -52,6 +61,27 @@ module ApplicationHelper
       values += "<option value=\"#{ format('%02d', hour) }:00\">#{ display_hour }:00 #{ meridian }</option>"
       values += "<option value=\"#{ format('%02d', hour) }:30\">#{ display_hour }:30 #{ meridian }</option>"
     end
-    select_tag(name, raw(values), html_options)
+    select_tag(name.to_s, raw(values), html_options)
+  end
+
+  def event_type_glyph_name(event_type)
+    return 'calendar' unless event_type.present?
+
+    map = {
+      unit_meeting:       'users',
+      hiking:             'walking',
+      afloat:             'swimmer',
+      camping:            'tree',
+      ceremony:           'medal',
+      football:           'football-ball',
+      baseball:           'baseball-ball',
+      award_ceremony:     'medal',
+      fundraiser:         'money-bill',
+      community_service:  'hands-helping',
+      training:           'certificate',
+      swimming:           'swimmer',
+    }
+
+    map[event_type.to_sym] || 'calendar'
   end
 end

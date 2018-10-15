@@ -1,6 +1,6 @@
 - payment_method_on_file = @current_user.stripe_customer_id.present? && @current_user.payment_method.present?
 
-= form_for @submission, url: event_requirement_event_submissions_path(@event_requirement) do |f|
+= form_for @submission, url: unit_event_requirement_event_submissions_path(@event_requirement) do |f|
   - if payment_method_on_file
     - @body_classes = ['card-on-file']
 
@@ -13,6 +13,9 @@
       = radio_button_tag 'card_on_file', 'replace'
       | &nbsp;
       = label_tag 'card_on_file_replace', 'Use a different card'
+
+  - else
+    = render partial: 'event_submissions/credit_card_credentials'
 
   = render partial: 'event_submissions/stripe_js'
 

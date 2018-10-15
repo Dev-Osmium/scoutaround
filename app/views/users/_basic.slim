@@ -1,0 +1,42 @@
+h1 Your Profile
+
+= form_for @user.becomes(User), method: :put do |f|
+  .form-group
+    = f.label :email
+    = f.email_field :email, autofocus: true, class: 'form-control'
+
+  .form-group
+    = f.label :name
+    div(style="margin-bottom:3rem;")
+      = f.text_field :first_name, class: 'form-control', style: 'width: 32%; margin-right: 1%; float: left;'
+      = f.text_field :last_name,  class: 'form-control', style: 'width: 32%; margin-right: 1%; float: left;'
+      = f.text_field :nickname,   placeholder: 'Nickname (optional)', class: 'form-control', style: 'width: 33%; float: right;'
+
+  .form-group
+    = f.label :email
+    = f.email_field :email, class: 'form-control'
+
+  .form-group
+    = f.label :phone
+    = f.phone_field :phone, class: 'form-control'
+
+  .form-group
+    = f.label :date_of_birth
+    = f.text_field :date_of_birth, class: 'form-control datepicker'
+
+  .form-group
+    = f.label :avatar, 'Photo'
+    = image_tag rails_blob_path(@user.avatar), style: 'max-width: 100%;' if @user.avatar.attached?
+    = f.file_field :avatar, class: 'form-control'
+
+  - if @user.card_on_file?
+    .form-group
+      = f.label :payment_method
+      .form-control
+        = "#{ @user.payment_method.brand} ending in #{ @user.payment_method.last4 }"
+        = ", expires #{ @user.payment_method.expiration_month}/#{ @user.payment_method.expiration_year }"
+
+  .form-group
+    = f.submit "Update", class: 'btn btn-primary'
+
+= link_to "Back", :back

@@ -3,33 +3,27 @@
 - crumbtrail link_to @event.name, unit_event_path(@unit, @event)
 - crumbtrail t('registrations.title')
 
-- content_for :title do
-  = render partial: 'layouts/admin_badge'
+= content_for :title do
   h1 = @event.name
-  = render partial: 'event_registrations/admin' if @current_user_is_admin
-  - present @event do |event|
-    p
-      = event.dates
-      | &nbsp;&nbsp;/&nbsp;&nbsp;
-      = link_to @event.location, google_maps_link(@event.location), target: '_blank' if @event.location.present?
 
-h3.inline = I18n.t('registrations.title')
-.badge.badge-secondary = I18n.t('registrations.completions', registration_count: @event.event_registrations.count, completion_count: @event.event_registrations.complete.count)
+= content_for :actions do
+  - if @current_user_is_admin
+    = link_to t('registrations.add'), new_unit_event_event_registration_path(@unit, @event), class: 'btn btn-secondary'
 
-table.table
-  tr
-    th Name
-    th Status
-    th Action
-  = render partial: 'event_registrations/registration', collection: @event.event_registrations
+.row
+  .col-md-3
+    = render partial: 'events/nav'
 
-- content_for :utilities do
-  = render partial: 'event_registrations/requirements'
+  .col-md-9
+    h3.inline = t('registrations.title')
+    - if @event.event_registrations.count.positive?
+      .badge.badge-secondary = I18n.t('registrations.completions', registration_count: @event.event_registrations.count, completion_count: @event.event_registrations.complete.count)
 
-  br
-  br
+      table.table
+        tr
+          th Name
+          th Status
+          th Action
+        = render partial: 'event_registrations/registration', collection: @event.event_registrations
 
-  = link_to t('registrations.ctas.message'), '#', class: 'btn btn-secondary', data: { toggle: 'modal', target: '#messaging' }
-
-
-= render partial: 'event_registrations/messaging'
+    = render 'blank' if @event.event_registrations.count.zero?

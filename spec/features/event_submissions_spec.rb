@@ -6,7 +6,10 @@ RSpec.feature "Event submissions features", :type => :feature do
   end
 
   it 'uploads a submission' do
-    visit new_unit_event_requirement_event_submission_path(@unit, @requirement, registration: @registration.id)
+    registration = @event.event_registrations.find_by(user: @user)
+    expect(registration).to be_present
+    path = new_unit_event_requirement_event_submission_path(@unit, @requirement, registration: @registration.id)
+    visit path
     select @user.full_name,          from: 'event_submission_event_registration_id'
     select @requirement.description, from: 'event_submission_event_requirement_id'
     attach_file 'event_submission_attachment', File.expand_path('../support/test_attachment.pdf', __dir__)

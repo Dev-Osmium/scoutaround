@@ -1,0 +1,13 @@
+ul.nav.nav-pills(style="margin-bottom: 4rem;")
+  li.nav-item
+    a.nav-link.active(data-toggle='tab', href='#overview') Overview
+
+  - @registrant_names.each do |name|
+    li.nav-item
+      a.nav-link ="#{ name }'s Checklist"
+
+  li.nav-item
+    a.nav-link(data-toggle='tab', href='#attendees') Attendees
+
+  li.nav-item
+    a.nav-link(data-toggle='tab', href='#messages') Messages

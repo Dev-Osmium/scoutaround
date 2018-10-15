@@ -4,7 +4,6 @@
   #message-list
     = render partial: 'events/messages/message_list', locals: { messages: [@event.messages.last] }
 
-  = link_to event_messages_path(@event) do
-    i.fas.fa-comment
-    | &nbsp;
-    = t('events.messages_cta')
+= link_to 'Post a Message', '#', data: { toggle: 'modal', target: '#messaging' }, class: 'btn btn-secondary'
+
+= render partial: 'announcements/new_message_modal'

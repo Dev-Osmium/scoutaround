@@ -1,24 +1,26 @@
-- crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_path(@unit)
-- crumbtrail link_to t('units.settings.title', unit_type: @unit.type.titleize)
-- crumbtrail t('payments.title')
+- Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+- @charges = Stripe::Charge.list({}, stripe_account: @unit.stripe_user_id).data if @unit.accepts_payments?
 
-- content_for :title do
-  h1 = t('payments.title')
-  p Your Stripe identifier: #{ @unit.stripe_user_id }
 
-= render partial: 'units/payments/none' unless @charges.count.positive?
+h1 = t('payments.title')
 
-table.table
-  tr
-    th = t('payments.columns.date_time')
-    th = t('payments.columns.amount')
-    th = t('payments.columns.id')
+p Your Stripe identifier: #{ @unit.stripe_user_id }
 
-  - @charges.each do |charge|
+- if @charges&.count&.positive?
+  table.table
     tr
-      td = Time.at(charge[:created]).to_formatted_s(:long)
-      td = number_to_currency(charge[:amount] / 100.0)
-      td = charge[:id]
+      th = t('payments.columns.date_time')
+      th = t('payments.columns.amount')
+      th = t('payments.columns.id')
+
+    - @charges&.each do |charge|
+      tr
+        td = Time.at(charge[:created]).to_formatted_s(:long)
+        td = number_to_currency(charge[:amount] / 100.0)
+        td = charge[:id]
+
+- else
+  = render partial: 'payments/none'
 
 - account = Stripe::Account.retrieve(@unit.stripe_user_id)
 - link_data = account.login_links.create()

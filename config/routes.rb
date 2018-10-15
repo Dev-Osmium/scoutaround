@@ -13,14 +13,16 @@ Rails.application.routes.draw do
   # resources :magic_links,       path: 'retrieve',    only: [:show, :destroy]
   # resources :unit_positions,                         only: [:edit, :destroy]
   resources :units, path: '/' do
-    get '/', to: 'events#index'
+    get '/', to: 'announcements#index'
     get '/payments/setup', to: 'stripe#show' # return route for Stripe onboarding
 
     resources :events do
       resources :event_registrations,   path: 'registrations'
       resources :event_requirements,    path: 'requirements'
       resources :event_submissions,     path: 'submissions'
+      resources :attendances,           path: 'attendance'
       resources :messages
+      post :publish
     end
 
     # resources :achievements,            path: 'advancement'
@@ -29,6 +31,7 @@ Rails.application.routes.draw do
     #   resources :achievements
     # end
 
+    resources :messages,                path: 'announcements'
     resources :payments
     resources :membership_imports
     resources :event_requirements,      path: 'requirements' do
@@ -40,7 +43,7 @@ Rails.application.routes.draw do
       resources :achievements,          path: 'advancement'
     end
     scope module: 'units' do
-      resources :achievements, only: [:index], path: 'advancement'
+      resources :achievements, only: [:index, :update], path: 'advancement'
     end
     resources :document_library_items,  path: 'documents'
     resources :wiki_articles,           path: 'wiki'

@@ -8,8 +8,13 @@ class AchievementsController < UnitContextController
   before_action :find_membership
 
   def index
-    @next_rank = @user&.rank&.next_rank || Rank.find_by(ordinal: 0)
+    @next_rank = @user&.rank&.next_rank || @unit.ranks.first
+    @achievements = @user.achievements.order(:earned_at)
     @view = params[:view] || 'rank_progress'
+    respond_to do |format|
+      format.html
+      format.json
+    end
   end
 
   def new

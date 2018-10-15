@@ -48,7 +48,7 @@ class EventSubmissionsController < UnitContextController
     @event.event_registrations.each do |registration|
       if @current_user_is_admin
         @visible_event_registrations << registration
-      elsif registration.user == @current_user
+      elsif registration.user_id == @current_user.id
         @visible_event_registrations << registration
       elsif @current_user.guardees.include? registration.user
         @visible_event_registrations << registration
@@ -119,7 +119,7 @@ class EventSubmissionsController < UnitContextController
   def process_credit_card
     total = 0
     @current_user.family.each do |user|
-      if user.is_member_of?(unit: @unit)
+      if user.member_of?(@unit)
         registration = @event.event_registrations.find_by(user: user)
         if registration.present?
           user_fee = user.type == 'Youth' ? @event_requirement.amount_youth : @event_requirement.amount_adult

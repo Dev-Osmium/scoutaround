@@ -1,9 +1,8 @@
 class DocumentLibraryItemsController < UnitContextController
   before_action :find_document_library_item, except: [:index, :new, :create]
-  before_action :find_unit
 
   def index
-    @document_library_items = @unit.document_library_items
+    @document_library_items = @unit.document_library_items.where(parent_id: nil)
   end
 
   def show

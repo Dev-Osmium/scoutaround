@@ -1,0 +1,98 @@
+- targets = [ \
+  ['Nobody', :none], \
+  ['Active Members (Adult & Youth)', :all], \
+  ['Active Adults', :adults], \
+]
+
+#messaging.modal
+  .modal-dialog.modal-lg
+    .modal-content
+      = form_for [@unit.becomes(Unit), @unit.messages.new] do |f|
+        .modal-header
+          h5.modal-title = t('registrations.ctas.message')
+          button.close(data-dismiss="modal")
+            span &times;
+        .modal-body
+          .form-group
+            = label_tag :target, 'Ping:'
+            = select_tag :pingees, options_for_select(targets), class: 'form-control'
+
+          .form-group
+            = f.label :event, 'Related event:'
+            = f.collection_select :messagable_id, @unit.events.future, :id, :name, { include_blank: 'None' }, { class: 'form-control' }
+
+          .form-group
+            = f.label :body, 'Message:'
+            = f.trix_editor :body
+
+        .modal-footer
+          button.btn.btn-secondary(data-dismiss="modal") = t('cancel')
+          = f.submit 'Send', class: 'btn btn-primary'
+          
+javascript:
+  $('#message_messagable_id').change(function() {
+    var val = $(this).val();
+    var attendeeOption = $('#pingees option[value="attendees"]');
+
+    if (val == '' && attendeeOption) {
+      attendeeOption.remove();
+    } else if (!attendeeOption) {
+
+    }
+  });
+
+  (function() {
+    var createStorageKey, host, uploadAttachment;
+
+    Trix.config.attachments.preview.caption = {
+      name: false,
+      size: false
+    };
+
+    document.addEventListener("trix-attachment-add", function(event) {
+      var attachment;
+      attachment = event.attachment;
+      if (attachment.file) {
+        return uploadAttachment(attachment);
+      }
+    });
+
+    host = "https://d13txem1unpe48.cloudfront.net/";
+
+    uploadAttachment = function(attachment) {
+      var file, form, key, xhr;
+      file = attachment.file;
+      key = createStorageKey(file);
+      form = new FormData;
+      form.append("key", key);
+      form.append("Content-Type", file.type);
+      form.append("file", file);
+      xhr = new XMLHttpRequest;
+      xhr.open("POST", host, true);
+      xhr.upload.onprogress = function(event) {
+        var progress;
+        progress = event.loaded / event.total * 100;
+        return attachment.setUploadProgress(progress);
+      };
+      xhr.onload = function() {
+        var href, url;
+        if (xhr.status === 204) {
+          url = href = host + key;
+          return attachment.setAttributes({
+            url: url,
+            href: href
+          });
+        }
+      };
+      return xhr.send(form);
+    };
+
+    createStorageKey = function(file) {
+      var date, day, time;
+      date = new Date();
+      day = date.toISOString().slice(0, 10);
+      time = date.getTime();
+      return "tmp/" + day + "/" + time + "-" + file.name;
+    };
+
+  }).call(this);

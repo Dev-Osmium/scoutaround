@@ -1,19 +1,20 @@
 #event-calendar
-  - first_day_of_week = 0 # sunday
-  - last_day_of_week  = 6 # saturday
-  - current_date = Date.today.beginning_of_month
-
-  - if params[:month].present? && params[:year].present?
-    - current_date = Date.new(params[:year].to_i, params[:month].to_i, 1)
-
+  - first_day_of_week   = 0 # sunday
+  - last_day_of_week    = 6 # saturday
+  - current_date        = Date.new(@year.to_i, @month.to_i, 1)
   - previous_month_date = current_date.at_beginning_of_month - 1.month
   - next_month_date     = current_date.at_beginning_of_month.next_month
 
-  h3 = current_date.strftime('%B %Y')
   p
-    = link_to previous_month_date.strftime('%B'), unit_events_path(@unit, view: 'calendar', year: previous_month_date.year, month: previous_month_date.month, filter: params[:filter])
-    | &nbsp;&nbsp;/&nbsp;&nbsp;
-    = link_to next_month_date.strftime('%B'), unit_events_path(@unit, view: 'calendar', year: next_month_date.year, month: next_month_date.month, filter: params[:filter])
+    = link_to unit_events_path(@unit, view: 'calendar', year: previous_month_date.year, month: previous_month_date.month, filter: params[:filter]) do
+      i.fal.fa-chevron-left
+    span(style="margin: 0 1rem;")
+      = current_date.strftime('%B %Y')
+    = link_to unit_events_path(@unit, view: 'calendar', year: next_month_date.year, month: next_month_date.month, filter: params[:filter]) do
+      i.fal.fa-chevron-right
+
+    span(style="margin-left: 2rem;")
+      = link_to 'Today', unit_events_path(@unit, view: 'calendar', year: Date.today.year, month: Date.today.month, filter: params[:filter])
 
   - if params[:filter] == 'registered'
     .alert.alert-warning
@@ -43,7 +44,7 @@
 
           - today_events = @events.select { |e| current_date.to_date >= e.starts_at.to_date && current_date.to_date <= e.ends_at.to_date }
 
-          td(class="day-cell #{'today' if current_date == Date.today}")
+          td(class="day-cell #{'today' if current_date == Date.today}" data-date="#{ current_date }")
             .header
               - if current_date.month != current_month
                 span.month = current_date.strftime('%b')
@@ -56,13 +57,17 @@
               - classes = ['event']
               - classes << 'start' if current_date.year == event.starts_at.year && current_date.month == event.starts_at.month && current_date.day == event.starts_at.day || current_date.wday == first_day_of_week
               - classes << 'ends'  if current_date.year == event.ends_at.year && current_date.month == event.ends_at.month && current_date.day == event.ends_at.day || current_date.wday == last_day_of_week
+              - classes << (event.published ? 'published' : 'unpublished')
 
               - family_registrants = []
               - @current_user.family.each do |user|
                 - family_registrants << user if event.registered_for?(user: user)
 
               - registrant_names = family_registrants.map{ |u| u.first_name }.join(', ')
-              - if event.require_registration
+
+              - if !event.published
+                - title = 'Unpublished'
+              - elsif event.require_registration
                 - title = family_registrants.count.zero? ? t('calendar.event.no_family_attendees') : t('calendar.event.attendees', names: registrant_names)
               - elsif !event.all_day?
                 - title = event.starts_at.strftime('%-I:%M')
@@ -80,3 +85,7 @@ javascript:
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
+
+  $('.day-cell').click(function() {
+
+  });

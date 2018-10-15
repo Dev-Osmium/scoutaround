@@ -1,0 +1,14 @@
+- options     = { filter_html: true, hard_wrap: true, link_attributes: { rel: 'nofollow', target: "_blank" }, space_after_headers: true, fenced_code_blocks: true }
+- extensions  = { autolink: true, superscript: true, disable_indented_code_blocks: true }
+- renderer = Redcarpet::Render::HTML.new(options)
+- markdown = Redcarpet::Markdown.new(renderer, extensions)
+
+li
+  .row
+    .col-md-3.meta
+      p.author = message.author.short_name
+      p.dates  = "#{ distance_of_time_in_words_to_now(message.created_at) } ago"
+
+    .col-md-9
+      = raw(message.body)
+

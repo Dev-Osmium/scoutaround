@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :wiki_article do
-    title "MyString"
-    body "MyText"
+    title  { "Wiki Article" }
+    body { "Lorem ipsum etc etc" }
   end
 end

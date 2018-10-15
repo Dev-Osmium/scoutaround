@@ -3,8 +3,7 @@
 - crumbtrail t('events.add')
 
 .row
-  .col-md-3
-  .col-md-6
+  .col-md-12
     h1 = t('events.add')
     = form_for @event, url: unit_events_path(@unit) do |f|
       .form-group
@@ -13,7 +12,15 @@
 
       .form-group
         = f.label :location
-        = f.text_field :location, class: 'form-control'
+        = f.text_field :location, class: 'form-control stacked', placeholder: 'Venue name'
+        = f.text_field :address, class: 'form-control stacked', placeholder: 'Address'
+        .row
+          .col-md-8
+            = f.text_field :city, class: 'form-control', placeholder: 'City'
+          .col-md-2
+            = f.text_field :state, class: 'form-control', placeholder: 'State'
+          .col-md-2
+            = f.text_field :postal_code, class: 'form-control', placeholder: 'Zip'
 
       .form-group
         = f.label :starts_at
@@ -42,6 +49,14 @@
           .row
             .col-md-8
               = f.text_field :registration_closes_at, value: @event.registration_closes_at.strftime('%d %B %Y'), class: 'form-control datepicker'
+
+      .form-group
+        = f.label :attachments
+        = f.file_field :attachments, multiple: true, direct_upload: true
+
+      .form-group
+        = f.label :minimum_age
+        = f.number_field :minimum_age, class: 'form-control'
 
       .form-group
         = label_tag :repeat

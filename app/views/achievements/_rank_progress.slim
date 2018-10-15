@@ -6,7 +6,7 @@
         = number_to_percentage(@next_rank.progress_for(user: @user), precision: 0)
 
     ol.requirements
-      = render partial: 'requirements/show/requirement', collection: @next_rank.requirements, locals: { include_checkboxes: true }
+      = render partial: 'achievements/requirement', collection: @next_rank.requirements, locals: { include_checkboxes: true }
 
     = render partial: 'achievements/requirements_scripts'
 

@@ -11,4 +11,8 @@ class EventPolicy < ApplicationPolicy
   def update?
     event.unit.role_for(user: user) == 'admin'
   end
+
+  def publish?
+    true
+  end
 end

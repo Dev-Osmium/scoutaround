@@ -1,4 +1,4 @@
-after :ranks do
+after :bsa_ranks do
   rank = Rank.find_by(name: 'Eagle')
 
   #1 tenure
@@ -59,3 +59,5 @@ after :ranks do
   # 7
   Requirement.where(program_code: 'bsa', achievable: rank, name: 'Successfully complete your board of review for the Eagle rank.[4] In preparation for your board of review, prepare and attach to your Eagle Scout Rank Application a statement of your ambitions and life purpose and a listing of positions held in your religious institution, school, camp, community, or other organizations, during which you demonstrated leadership skills. Include honors and awards received during this service. (This requirement may be met after age 18, in accordance with Guide to Advancement topic 8.0.3').first_or_create
 end
+
+print "BSA Eagle requirements\n"

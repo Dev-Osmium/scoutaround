@@ -1,0 +1,41 @@
+- if @user_can_administer_event
+  .details
+    h5
+      | Administration
+      i.fa-tree.fas(style="margin-left: 0.5rem; color: #aaa;")
+
+    p(style="margin-bottom: 0.5rem;")
+      = link_to edit_unit_event_path(@unit, @event), title: t('admin_only'), class: 'glyphed' do
+        span.glyph
+          i.fal.fa-wrench(style="margin-right: 0.5rem;")
+        = t('events.edit')
+
+    p(style="margin-bottom: 0.5rem;")
+      = link_to unit_event_event_registrations_path(@unit, @event), title: t('admin_only'), class: 'glyphed' do
+        span.glyph
+          i.fal.fa-users(style="margin-right: 0.5rem;")
+        = t('events.registrations')
+
+    p(style="margin-bottom: 0.5rem;")
+      = link_to unit_event_attendances_path(@unit, @event), class: 'glyphed', data: @attendance_link_data do
+        span.glyph
+          i.fal.fa-clipboard(style="margin-right: 0.5rem;")
+        | Take Attendance
+
+.details
+  h5 Date &amp; Time
+  time
+    p
+      = @event.starts_at.to_formatted_s(:scoutaround)
+      | &ndash;
+    p = @event.ends_at.to_formatted_s(:scoutaround)
+    p = link_to 'Add to Calendar'
+
+.details
+  h5 Location
+  p = @event.location
+  - if @event.address.present?
+    p = @event.address
+  - if @event.city.present? && @event.state.present?
+    p = "#{ @event.city }, #{ @event.state }  #{ @event.postal_code }"
+  p = link_to 'View Map', '#map'

@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pundit
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :exception, unless: -> { request.format.json? }
   before_action :set_raven_context
   layout :select_layout
 

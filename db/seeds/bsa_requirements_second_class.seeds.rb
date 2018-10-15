@@ -1,4 +1,4 @@
-after :ranks do
+after :bsa_ranks do
   rank = Rank.find_by(name: 'Second Class')
 
   # Camping and Outdoor Ethics
@@ -68,4 +68,4 @@ after :ranks do
   Requirement.where(program_code: 'bsa', achievable: req, name: 'Successfully complete your board of review for the Second Class rank.').first_or_create
 end
 
-puts 'Second Class requirements'
+print "BSA Second Class requirements\n"

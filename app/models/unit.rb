@@ -2,8 +2,9 @@ class Unit < ApplicationRecord
   has_many :events
   has_many :event_registrations, through: :events
   has_many :memberships
-  has_many :members, through: :memberships, source: 'user'
+  has_many :members, -> { where('memberships.active = true') }, through: :memberships, source: 'user'
   has_many :document_library_items
+  has_many :messages, as: :messagable
 
   # when fetching achievements for a unit, we only want those achievements belonging to
   # the same program. For instance, we don't want to show Cub Scout achievements in a
@@ -55,6 +56,7 @@ class Unit < ApplicationRecord
   end
 
   def set_trial_expiration
+    self.subscription_plan = SubscriptionPlan.first
     self.subscription_expires_at = 30.days.from_now
   end
 

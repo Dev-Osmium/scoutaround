@@ -12,7 +12,7 @@ RSpec.feature "Home page", :type => :feature do
     fill_in 'user_email', with: @user.email
     fill_in 'user_password', with: 'goscoutaround'
     click_on I18n.t('auth.sign_in')
-    expect(page).to have_current_path(unit_events_path(unit_id: @unit.id))
+    expect(page).to have_current_path(unit_path(unit_id: @unit.id))
   end
 
   # it 'displays the home page when user belongs to multiple units' do

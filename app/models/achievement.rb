@@ -3,14 +3,16 @@ class Achievement < ApplicationRecord
   belongs_to :achievable
   validates_uniqueness_of :user, scope: :achievable
   validate :achievable_is_concrete
-  delegate :type, to: :achievable
-  delegate :name, to: :achievable
-  delegate :ordinal, to: :achievable
+  delegate :type,         to: :achievable
+  delegate :name,         to: :achievable
+  delegate :ordinal,      to: :achievable
   delegate :program_code, to: :achievable
-  scope :merit_badges,           -> { joins(:achievable).where('achievables.type = ?', 'MeritBadge') }
-  scope :ranks,                  -> { joins(:achievable).where('achievables.type = ?', 'Rank') }
-  scope :non_advancement_awards, -> { joins(:achievable).where('achievables.type = ?', 'NonAdvancementAward') }
+  scope :merit_badges,           -> { joins(:achievable).where('achievables.type = ?',  'MeritBadge') }
+  scope :ranks,                  -> { joins(:achievable).where('achievables.type = ?',  'Rank') }
+  scope :non_advancement_awards, -> { joins(:achievable).where('achievables.type = ?',  'NonAdvancementAward') }
   scope :awardable,              -> { joins(:achievable).where('achievables.type != ?', 'Requirement') }
+  scope :earned,                 -> { where('earned_at IS NOT NULL') }
+  scope :unapproved,             -> { where('earned_at IS NULL') }
   scope :unawarded,              -> { where('awarded_at IS NULL') }
   has_many_attached :attachments
 

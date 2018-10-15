@@ -1,4 +1,10 @@
 class User < ApplicationRecord
+  include UserPreferences
+
+  preference :unit_announcement_notifications, 'always'
+  preference :event_announcement_notifications, 'always'
+  preference :notification_method, 'email'
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -11,8 +17,8 @@ class User < ApplicationRecord
   has_many :registered_events, through: :event_registrations, class_name: 'Event'
   has_many :events, through: :units
   has_many :achievements
-  has_many :user_preferences
   has_one  :payment_method
+  has_many :attendances
   has_one_attached :avatar
 
   #
@@ -38,7 +44,7 @@ class User < ApplicationRecord
   end
 
   def short_name
-    "#{first_name} #{last_name[0]}"
+    "#{ nickname.present? ? nickname : first_name } #{ last_name }"
   end
 
   def initials
@@ -46,7 +52,7 @@ class User < ApplicationRecord
   end
 
   def preferred_name
-    nickname || first_name
+    nickname.present? ? nickname : first_name
   end
 
   def multiple_units?
@@ -61,7 +67,7 @@ class User < ApplicationRecord
     [self].concat(self.guardees)
   end
 
-  def is_member_of?(unit: nil)
+  def member_of?(unit)
     return false unless unit.present?
     unit.memberships.exists?(user_id: self.id)
   end

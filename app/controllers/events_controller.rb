@@ -6,14 +6,36 @@ class EventsController < UnitContextController
   before_action :find_event, except: [:index, :new, :create]
   before_action :fetch_view_preference, only: [:index]
   after_action  :store_view_preference, only: [:index]
-  layout :choose_layout
-
-  def choose_layout
-    'application'
-  end
 
   def index
-    @events = @unit.present? ? @unit.events.future.order(:starts_at) : @current_user.events.future.order(:starts_at)
+    session[:calendar_list_start_date] ||= Date.today.to_s
+    session[:calendar_list_end_date]   ||= 6.months.from_now.to_s
+    session[:calendar_include_unpublished] ||= 'no'
+
+    if params[:change].present? && params[:to].present?
+      session[params[:change]] = params[:to]
+    end
+
+    @start_date = Date.parse(session[:calendar_list_start_date])
+    @end_date   = Date.parse(session[:calendar_list_end_date])
+    @earlier_start_date  = (@start_date - 1.day).beginning_of_year
+    @later_end_date      = @end_date + 6.months
+    @include_unpublished = session[:calendar_include_unpublished] == 'yes'
+
+    if @view == 'list'
+      @events = @unit.events.where('starts_at >= ? AND starts_at <= ?', @start_date, @end_date)
+    else
+      @events = @unit.events
+    end
+
+    @events = @events.published unless @include_unpublished
+
+    # for modal
+    @event = Event.new
+    @event.starts_at = 6.weeks.from_now
+    @event.ends_at   = 6.weeks.from_now
+    @event.registration_closes_at = 5.weeks.from_now
+
     @tracking_properties = { view: @view }
 
     # this is bound to be inefficient, but let's get it working first
@@ -41,6 +63,9 @@ class EventsController < UnitContextController
 
   def edit
     # TODO: pundit this
+    @body_classes = [:admin]
+    @needs_admin_coaching = @current_user.preference_for(key: :needs_admin_coaching, default: 'true') == 'true'
+    @current_user.save_preference_for(key: :needs_admin_coaching, value: 'false')
   end
 
   def new
@@ -48,6 +73,17 @@ class EventsController < UnitContextController
     @event.starts_at = 6.weeks.from_now
     @event.ends_at   = 6.weeks.from_now
     @event.registration_closes_at = 5.weeks.from_now
+  end
+
+  def publish
+    path = unit_event_path(@unit, @event)
+    @event.update_attributes(published: true)
+    @unit.messages.create(
+      author: @current_user,
+      body: "#{ @event.name} has been published to the #{ @unit.type } calendar. View details <a href='/units/#{ @unit.id }/events/#{ @event.id }'>here</a>."
+    )
+    flash[:notice] = "#{ @event.name} has been published to the calendar."
+    redirect_to path
   end
 
   def create
@@ -83,6 +119,7 @@ class EventsController < UnitContextController
       end
 
       flash[:notice] = t('events.confirm')
+      @body_classes = nil
       redirect_to unit_events_path(@unit)
     end
   end
@@ -105,20 +142,28 @@ class EventsController < UnitContextController
 
   def find_event
     @event = @current_user.events.find(params[:id] || params[:event_id])
+    @body_classes = @event.published ? ['published'] : ['unpublished']
+    flash[:alert] = 'This event is unpublished.' unless @event.published
     @unit = @event.unit
     @current_user_is_admin = @unit.role_for(user: @current_user) == 'admin'
     @membership = Membership.where(user: @current_user, unit: @event.unit).first
   end
 
   def event_params
-    params.require(:event).permit(:name, :location, :starts_at, :ends_at, :require_registration, :registration_closes_at)
+    params.require(:event).permit(:name, :location, :starts_at, :ends_at, :require_registration,
+      :registration_closes_at, :address, :city, :state, :postal_code, :banner_image_url,
+      :published, :event_type, :description, :minimum_age, attachments: [])
   end
 
   def fetch_view_preference
-    @view = params[:view] || @current_user.preference_for(key: :unit_events, default: :list)
+    @view  = params[:view]  || @current_user.preference_for(key: :unit_events_view,  default: :list)
+    @month = params[:month] || @current_user.preference_for(key: :unit_events_month, default: Date.today.month)
+    @year  = params[:year]  || @current_user.preference_for(key: :unit_events_year,  default: Date.today.year + 1)
   end
 
   def store_view_preference
-    @current_user.save_preference_for(key: :unit_events, value: @view)
+    @current_user.save_preference_for(key: :unit_events_view,  value: @view)
+    @current_user.save_preference_for(key: :unit_events_month, value: @month)
+    @current_user.save_preference_for(key: :unit_events_year,  value: @year)
   end
 end

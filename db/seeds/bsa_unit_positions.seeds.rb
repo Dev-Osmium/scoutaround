@@ -11,8 +11,8 @@ PrototypePosition.where(program_code: 'bsa', audience: 'youth', name: 'Quarterma
 PrototypePosition.where(program_code: 'bsa', audience: 'youth', name: 'Bugler').first_or_create
 PrototypePosition.where(program_code: 'bsa', audience: 'youth', name: 'Scribe').first_or_create
 PrototypePosition.where(program_code: 'bsa', audience: 'youth', name: 'Chaplain\'s Aid').first_or_create
-PrototypePosition.where(program_code: 'bsa', audience: 'youth', name: 'Patrol Leader').first_or_create
-PrototypePosition.where(program_code: 'bsa', audience: 'youth', name: 'Assistant Patrol Leader').first_or_create
+PrototypePosition.where(program_code: 'bsa', audience: 'youth', exclusive: false, name: 'Patrol Leader').first_or_create
+PrototypePosition.where(program_code: 'bsa', audience: 'youth', exclusive: false, name: 'Assistant Patrol Leader').first_or_create
 PrototypePosition.where(program_code: 'bsa', audience: 'youth', exclusive: false, name: 'Junior Assistant Scoutmaster').first_or_create
 
 PrototypePosition.where(program_code: 'cubs', audience: 'adult', name: 'Committee Chair').first_or_create

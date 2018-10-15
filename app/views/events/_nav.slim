@@ -1,0 +1,4 @@
+ul.ruled
+  li#nav-event          = link_to 'Event Basics',  edit_unit_event_path(@unit, @event)
+  li#nav-registrations  = link_to 'Registrations', unit_event_event_registrations_path(@unit, @event)
+  li#nav-requirements   = link_to 'Requirements',  unit_event_event_requirements_path(@unit, @event)

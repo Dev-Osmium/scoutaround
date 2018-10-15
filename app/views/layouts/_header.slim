@@ -18,88 +18,11 @@ header#mobile
 
 header#primary
   nav(style="position: relative;")
-    - if @current_user.present?
-    .utilities
-      .dropdown.hello
-        = link_to '#', data: {toggle: 'dropdown'}, class: 'link' do
-          = t('hello', name: @current_user.nickname)
-          | &nbsp;
-          i.fa-chevron-down.fas
-
-        .dropdown-menu
-
-          - if @current_user.units.count > 1
-            - @current_user.units.each do |unit|
-              = link_to unit_path(unit), class: 'dropdown-item' do
-                - if @unit == unit
-                  i.fa-check.fas
-                  | &nbsp;
-                = UnitPresenter.unit_display_name(unit)
-            .dropdown-divider
-
-          = link_to t('profile'), edit_user_path(@current_user), class: 'dropdown-item'
-          / = link_to t('units.new'), new_unit_path, class: 'dropdown-item'
-          .dropdown-divider
-          = link_to t('sign_out'), destroy_user_session_path, method: :delete, class: 'dropdown-item'
-
-    - unless @unit.present?
-      br
-      br
-    - else
-      ul
-        li#nav-item-announcements
-          = link_to unit_path(@unit) do
-            span
-              i.fas.fa-broadcast-tower
-            = t('announcements.title')
-
-        li#nav-item-roster
-          = link_to unit_memberships_path(@unit) do
-            span
-              i.fas.fa-users
-            = t('members.roster')
-
-        li#nav-item-events
-          = link_to unit_events_path(@unit) do
-            span
-              i.fas.fa-calendar-alt
-            = t('events.title')
-
-        li#nav-item-advancement
-          - if @current_user_is_admin
-            = link_to unit_achievements_path(@unit) do
-              span
-                i.fas.fa-medal
-              = t('advancement.title')
-          - else
-            = link_to unit_membership_achievements_path(@unit, @membership) do
-              span
-                i.fas.fa-medal
-              = t('advancement.title')
-
-        - unless true
-          li#nav-item-documents
-            = link_to unit_wiki_articles_path(@unit) do
-              span
-                i.fas.fa-book-open
-              = t('wiki.title')
-
-        li#nav-item-documents
-          = link_to unit_document_library_items_path(@unit) do
-            span
-              i.fas.fa-file-alt
-            = t('documents.title')
-
-        - if @membership.role == 'admin'
-          li#nav-item-unit-settings
-            = link_to edit_unit_path(@unit) do
-              span
-                i.fas.fa-screwdriver
-              = t('units.settings.title', unit_type: @unit.type)
-
-header#secondary.crumbtrail
-  - separator = raw('&nbsp;&nbsp;/&nbsp;&nbsp;')
-  = raw((@crumbtrail || []).join(separator))
+    ul
+      - @current_user.units.each do |unit|
+        li
+          = link_to unit_path(unit) do
+            = UnitPresenter.unit_display_name(unit)
 
 javascript:
   $('a#mobile').click(function() {

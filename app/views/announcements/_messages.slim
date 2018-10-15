@@ -1,0 +1,24 @@
+ul#announcements
+  = render partial: 'message', collection: @messages
+
+scss:
+  ul#announcements {
+  	list-style: none;
+  	padding-left: 0;
+
+  	li {
+  		padding: 1rem 0;
+  	}
+  }
+
+  .meta {
+  	font-size: 14px;
+
+  	p {
+  	  margin-bottom: 0;
+  	}
+  }
+
+  .author {
+  	font-weight: 800;
+  }

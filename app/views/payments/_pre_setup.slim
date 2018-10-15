@@ -1,11 +1,9 @@
-- crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_events_path(@unit)
-- crumbtrail link_to 'Settings', unit_unit_settings_path(@unit)
-- crumbtrail 'Payments'
-
 h1 = t('units.settings.set_up_payments')
 
 p Scoutaround uses <a href="https://stripe.com">Stripe</a> to process payments.
 
+p If you prefer not to use Stripe, you can still collect funds via traditional means (check, cash); Scoutaround makes it easy to track those offline payments.
+
 p Clicking the button below will send you to the Stripe website where you'll set up a Stripe account and connect it to your bank.
 
-= link_to t('got_it'), stripe_connect_path, class: 'btn btn-primary'
+= link_to t('got_it'), stripe_connect_path(@unit), class: 'btn btn-primary'

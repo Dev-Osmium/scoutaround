@@ -10,10 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_12_160013) do
+ActiveRecord::Schema.define(version: 2018_10_13_112454) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "hstore"
+  enable_extension "pg_stat_statements"
+  enable_extension "pgcrypto"
+  enable_extension "plperl"
   enable_extension "plpgsql"
+  enable_extension "unaccent"
+  enable_extension "uuid-ossp"
 
   create_table "achievables", force: :cascade do |t|
     t.string "type"
@@ -67,11 +73,21 @@ ActiveRecord::Schema.define(version: 2018_08_12_160013) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "attendances", force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "user_id"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "document_library_items", force: :cascade do |t|
     t.string "name"
     t.integer "unit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type"
+    t.integer "parent_id"
   end
 
   create_table "event_registrations", force: :cascade do |t|
@@ -125,6 +141,15 @@ ActiveRecord::Schema.define(version: 2018_08_12_160013) do
     t.datetime "updated_at", null: false
     t.datetime "registration_closes_at"
     t.boolean "require_registration", default: false
+    t.string "address"
+    t.string "city"
+    t.string "state"
+    t.string "postal_code"
+    t.string "banner_image_url"
+    t.text "description"
+    t.integer "minimum_age"
+    t.boolean "published", default: false
+    t.string "event_type"
   end
 
   create_table "guardianships", force: :cascade do |t|

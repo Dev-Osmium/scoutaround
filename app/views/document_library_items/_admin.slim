@@ -1,10 +1,37 @@
-.admin.dropdown
-  = link_to '#', data: { toggle: 'dropdown' }, class: 'glyph' do
-    span(data-toggle="tooltip" title="#{t('events.administration')}")
-      = render partial: 'layouts/campfire'
+/ .admin.dropdown
+/   = link_to '#', data: { toggle: 'dropdown' }, class: 'glyph' do
+/     span(data-toggle="tooltip" title="#{t('events.administration')}")
+/       = render partial: 'layouts/campfire'
 
-  .dropdown-menu.dropdown-menu-right
-    - if @current_user_is_admin
-      = link_to new_unit_document_library_item_path(@unit), class: 'dropdown-item' do
-        i.fa-tree.fal
-        = t('documents.add')
+/   .dropdown-menu.dropdown-menu-right
+/     - if @current_user_is_admin
+/       = link_to new_unit_document_library_item_path(@unit), class: 'dropdown-item' do
+/         i.fa-tree.fal
+/         = t('documents.add')
+
+- folder = @unit.document_library_items.new(type: 'LibraryFolder')
+
+.actions
+  ul
+  	li = link_to 'Upload', new_unit_document_library_item_path(@unit), class: 'btn btn-primary'
+  	li = link_to '#new_folder', data: { toggle: 'modal' } do
+  	  i.fa-folder-plus.fas
+  	  | New Folder
+
+#new_folder.modal
+  .modal-dialog
+    .modal-content
+      = form_for [@unit.becomes(Unit), folder.becomes(DocumentLibraryItem)] do |f|
+        .modal-header
+          h5.modal-title New Folder
+          button.close(data-dismiss="modal")
+            span &times;
+        .modal-body
+          .form-group
+            = label_tag :name
+            = f.text_field :name, class: 'form-control'
+
+        .modal-footer
+          button.btn.btn-secondary(data-dismiss="modal") = t('cancel')
+          = f.hidden_field :type
+          = f.submit 'Add New Folder', class: 'btn btn-primary'

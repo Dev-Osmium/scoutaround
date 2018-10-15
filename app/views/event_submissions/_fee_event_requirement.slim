@@ -1,62 +1,62 @@
 - @total = 0
 
 - content_for :title do
-  .row
-    .col-md-1
-    .col-md-11
-      h1 = @event_requirement.description
+  h1 = @event_requirement.description
+  h2.subtitle = @event.name
 
-  .row
-    .col-md-1
-    .col-md-4
-      table.table
-        - @current_user.family.each do |user|
-          - if user.is_member_of?(unit: @unit)
-            - registration = @event.event_registrations.find_by(user: user)
-            - if registration.present?
-              - user_fee = user.type == 'Youth' ? @event_requirement.amount_youth : @event_requirement.amount_adult
-              - @total += user_fee
+.row
+  .col-md-4
+    table.table
+      - @current_user.family.each do |user|
+        - if user.member_of?(@unit)
+          - registration = @event.event_registrations.find_by(user: user)
+          - if registration.present?
+            - user_fee = user.type == 'Youth' ? @event_requirement.amount_youth : @event_requirement.amount_adult
+            - @total += user_fee
 
-              tr
-                td = user.first_name
-                td(style="text-align:right;") = number_to_currency(user_fee / 100.0)
+            tr
+              td = user.preferred_name
+              td(style="text-align:right;") = number_to_currency(user_fee / 100.0)
 
-        - processing_fee = @total * 0.029 + 30
-        - @total += processing_fee unless @event_requirement.waive_transaction_fees
+      - processing_fee = @total * 0.029 + 30
+      - @total += processing_fee unless @event_requirement.waive_transaction_fees
 
-        - unless @event_requirement.waive_transaction_fees
-          tr
-            td Processing Fee
-            td(style="text-align:right;") = number_to_currency(processing_fee / 100.0)
+      - unless @event_requirement.waive_transaction_fees
+        tr
+          td Processing Fee
+          td(style="text-align:right;") = number_to_currency(processing_fee / 100.0)
 
-        tr(style="font-weight: 600;")
-          td Total
-          td(style="text-align:right;") = number_to_currency(@total / 100.0)
+      tr(style="font-weight: 600;")
+        td Total
+        td(style="text-align:right;") = number_to_currency(@total / 100.0)
 
-    .col-md-1
-    .col-md-5
-      - if @current_user_is_admin
-        ul.nav.nav-tabs
-          li.nav-item
-            a.nav-link.active(href="#credit-card" data-toggle="tab") = t('submissions.credit_card')
+    = link_to 'Change Registrations', unit_event_path(@unit, @event, anchor: :register)
 
-          li.nav-item
-            a.nav-link(href="#manual" data-toggle="tab")
-              = t('submission.offline')
-              | &nbsp;
-              = render partial: 'layouts/admin_badge'
+  .col-md-1
 
-        .tab-content
-          #credit-card.tab-pane.fade.show.active
-            br
-            = render partial: 'event_submissions/credit_card'
+  .col-md-7
+    - if @current_user_is_admin
+      ul.nav.nav-tabs
+        li.nav-item
+          a.nav-link.active(href="#credit-card" data-toggle="tab") = t('submissions.credit_card')
 
-          #manual.tab-pane.fade
-            br
-            = render partial: 'event_submissions/manual'
+        li.nav-item
+          a.nav-link(href="#manual" data-toggle="tab")
+            = t('submission.offline')
+            | &nbsp;
+            = render partial: 'layouts/admin_badge'
 
-      - else
-        = render partial: 'event_submissions/credit_card'
+      .tab-content
+        #credit-card.tab-pane.fade.show.active
+          br
+          = render partial: 'event_submissions/credit_card'
+
+        #manual.tab-pane.fade
+          br
+          = render partial: 'event_submissions/manual'
+
+    - else
+      = render partial: 'event_submissions/credit_card'
 
 javascript:
   $(function () {

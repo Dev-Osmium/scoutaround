@@ -8,7 +8,7 @@ FactoryBot.define do
   end
 
   factory :troop, parent: :unit do
-    type 'Troop'
-    program_code 'bsa'
+    type { 'Troop' }
+    program_code { 'bsa' }
   end
 end

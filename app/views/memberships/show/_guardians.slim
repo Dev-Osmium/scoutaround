@@ -2,6 +2,6 @@ h3 = t('users.guardians')
 table.table
   - @user.guardians.each do |guardian|
     tr
-      td = link_to guardian.full_name, unit_membership_path(@unit, guardian.memberships.find_by(unit: @unit))
+      td = link_to guardian.short_name, unit_membership_path(@unit, guardian.memberships.find_by(unit: @unit))
       td = UserPresenter.display_email_for(user: guardian)
       td = guardian.phone

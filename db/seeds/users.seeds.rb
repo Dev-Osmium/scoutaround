@@ -1,4 +1,4 @@
-after :ranks, :unit_positions, :subscription_plans do
+after :bsa_ranks, :bsa_unit_positions, :subscription_plans do
   def create_user(type, first_name, last_name, date_of_birth, email, rank = nil)
     user = User.create_with(
       first_name: first_name,
@@ -8,7 +8,7 @@ after :ranks, :unit_positions, :subscription_plans do
       rank: Rank.find_by(name: rank),
       active: true,
       password: 'goscoutaround'
-    ).find_or_create_by!(email: email)
+    ).find_or_create_by(email: email)
   end
 
   owen  = create_user('Youth', 'Owen', 'McNamara', 12.years.ago,  'a1@scoutaround.org', 'Scout')
@@ -48,32 +48,34 @@ after :ranks, :unit_positions, :subscription_plans do
 
   puts "Guardianships: #{Guardianship.count}"
 
-  troop = Troop.where(
-    number:                       '2',
+  troop = Troop.create_with(
     program_code:                 'bsa',
-    city:                         'Scarsdale',
     state:                        'NY',
     chartering_organization_name: 'Immaculate Heart of Mary Church',
     council:                      'Westchester Putnam',
     district:                     'Algonquin',
-    subscription_plan:            SubscriptionPlan.find_by(sku: 'monthly'),
+    subscription_plan:            SubscriptionPlan.find_by(sku: 'annual'),
     subscription_expires_at:      1.year.from_now
-  ).first_or_create!
+  ).find_or_create_by(
+    city:                         'Scarsdale',
+    number:                       '2',
+  )
 
-  pack = Pack.where(
-    number:                       '33',
+  pack = Pack.create_with(
     program_code:                 'bsa_cubs',
-    city:                         'Larchmont',
     state:                        'NY',
     chartering_organization_name: 'St. Augustine\'s Church',
     council:                      'Westchester Putnam',
-    district:                     'Algoqiun',
+    district:                     'Algonqiun',
     subscription_plan:            SubscriptionPlan.find_by(sku: 'annual'),
-    subscription_expires_at:      1.year.from_now
-  ).first_or_create!
+    subscription_expires_at:      1.year.from_now    
+  ).find_or_create_by(
+    city:                         'Larchmont',
+    number:                       '33',
+  )
 
   User.all.each do |user|
-    troop.memberships.where(user: user).first_or_create!
+    troop.memberships.where(user: user).first_or_create
   end
 
   # set up cub pack
@@ -101,17 +103,20 @@ after :ranks, :unit_positions, :subscription_plans do
 
   summer_camp = troop.events.create_with(
     starts_at: 8.weeks.from_now,
-    ends_at: 9.weeks.from_now
+    ends_at: 9.weeks.from_now,
+    published: true,
   ).find_or_create_by(name: '2018 Camp Itchyowie')
 
   troop.events.create_with(
     starts_at: 4.weeks.from_now,
-    ends_at: 4.weeks.from_now
+    ends_at: 4.weeks.from_now,
+    published: true,
   ).find_or_create_by(name: 'Whitewater Rafting')
 
   troop.events.create_with(
     starts_at: 56.weeks.ago,
-    ends_at: 55.weeks.ago
+    ends_at: 55.weeks.ago,
+    published: true,
   ).find_or_create_by(name: '2017 Summer Camp')
 
   puts "Events: #{Event.count}"

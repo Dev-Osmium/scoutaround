@@ -8,7 +8,7 @@
 
   = render partial: 'memberships/show/utilities' if @current_user_is_admin
   = content_tag 'h4', @user.rank.name if @user.rank.present?
-  h1 = @user.full_name
+  h1 = @user.short_name
   p = @membership&.unit_position&.name
 
 = render partial: 'memberships/show/guardians'      if @user.guardians.present?

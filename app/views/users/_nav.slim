@@ -1,0 +1,6 @@
+ul.ruled
+  li#nav-basic
+    = link_to 'Basic Information', edit_user_path(@user)
+
+  li#nav-notifications
+    = link_to 'Notifications', edit_user_path(@user, view: 'notifications')

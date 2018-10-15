@@ -2,7 +2,7 @@
 - family_registrations   = []
 
 - @current_user.family.each do |user|
-  - next unless user.is_member_of?(unit: @unit)
+  - next unless user.member_of?(@unit)
   - registration = @event.event_registrations.find_by(user: user)
   - non_registrants << user unless registration.present?
   - next unless registration.present?
@@ -10,31 +10,8 @@
 
   .col-md-6
     .card(style="margin-bottom: 1rem;")
-      .card-header = "#{user.first_name}'s Checklist"
+      .card-header = "#{user.preferred_name}'s Checklist"
       .card-body
         table.table.checklist.table-sm
           = render partial: 'events/show/requirement', collection: @event.event_requirements, locals: { user: user, registration: registration }
-      .card-footer
-        = link_to [@unit.becomes(Unit), @event, registration], data: { toggle: 'tooltip' }, prompt: 'Are you sure?', title: "Unregister #{ user.first_name }", class: 'unregister', method: :delete do
-          i.far.fa-times
-          = t('registrations.destroy')
 
-- if non_registrants.count.positive?
-  .col-md-4
-    .card
-      .card-header
-        = t('event_registrations.non_registrants')
-      .card-body
-        table.table.checklist.table-sm
-          - non_registrants.each do |user|
-            tr
-              td
-                = user.first_name
-
-              td.event-requirement
-                = link_to unit_event_event_registrations_path(@unit, @event, user: user), method: :post, data: { toggle: 'tooltip' }, title: t('registrations.ctas.register') do
-                  i.fal.fa-clipboard-list
-
-  .col-md-8
-    - if family_registrations.count.zero?
-      h2 No one in your family is registered :(

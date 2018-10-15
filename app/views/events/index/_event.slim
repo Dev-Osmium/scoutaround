@@ -1,11 +1,25 @@
-tr.event
+tr.event(class="#{ (event.event_type || '').underscore } #{ 'unpublished' unless event.published }")
   - present event do |e|
+    td.glyph(style="text-align: center;")
+      i.fal(class="fa-#{ event_type_glyph_name(event.event_type) }")
+
+    td(style="text-align: right;")
+      - if event.starts_at.day == event.ends_at.day
+        = "#{ event.starts_at.strftime('%-d') }"
+      - elsif event.starts_at.month != event.ends_at.month
+        = raw("#{ event.starts_at.strftime('%-d') }&ndash;#{ event.ends_at.strftime('%-d %b') }")
+      - else
+        = raw("#{ event.starts_at.strftime('%-d') }&ndash;#{ event.ends_at.strftime('%-d') }")
+
     td.name
       = link_to unit_event_path(@unit, event)
         .title
+          - if event.past?
+            i.fa-check.far(style="margin-right: 0.5rem;")
           = event.name
+          = " (unpublished)" unless event.published
         .dates
-          = e.dates
-    td.dates.expendable = event.starts_at.strftime('%B %-d, %Y')
-    td.times.expendable = e.times
+          = e.times
+
+    td.dates.expendable = e.times
     td.attendees.expendable = event.event_registrations.count if event.require_registration

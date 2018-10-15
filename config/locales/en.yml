@@ -42,7 +42,7 @@ en:
     confirm:          'Added event to unit calendar'
     add_requirement:
       generic:        'Add Event Requirement'
-      document:       'Require a Document'
+      document:       'Require a Form or Document'
       payment:        'Charge an Event Fee'
     accept:
       document:       'Add Required Document'
@@ -66,6 +66,9 @@ en:
     confirmations:
       cancel:         'Event was removed from unit calendar'
     messages_cta:     'View the Event Message Board'
+    show_earlier:     'Show Earlier Events'
+    show_later:       'Show Later Events'
+    show_less:        'Show Fewer Events'
 
   submissions:
     title:                'Submissions'
@@ -101,7 +104,7 @@ en:
     city:       'City'
     new:        'Set Up a New Unit On Scoutaround'
     success:
-      payment_setup:   'Your unit is ready to accept payments'
+      payment_setup:   'Your unit is now ready to accept payments'
     import:     'Import Members'
     settings:
       title:           "%{unit_type} Settings"
@@ -115,13 +118,13 @@ en:
     item:              'Item'
     registrant:        'Registrant'
     submission_item:   'Submission Item'
-    add:               'Add Registrants'
+    add:               'Register Members'
     destroy:           'Unregister'
     completions:       '%{completion_count} of %{registration_count} completed'
     submission_due_in: 'Due in %{deictic}'
     overdue_by:        'Overdue by %{deictic}'
     cta_payment:       'Click to pay'
-    cta_document:      "Click to upload %{name}\'s %{document}"
+    cta_document:      "Click to upload %{name}'s %{document}"
     ctas:
       register:        'Register'
       message:         'Post a Message'
@@ -296,3 +299,6 @@ en:
     update:         'Update'
     approved_by:
       merit_badge:  'Counselor'
+    award_checked:  'Award Checked Achievements'
+    success:
+      bulk_update:  "%{count} achivements were awarded"

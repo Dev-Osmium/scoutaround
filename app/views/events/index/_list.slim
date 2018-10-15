@@ -1,8 +1,49 @@
+= link_to unit_events_path(@unit, change: 'calendar_list_start_date', to: @earlier_start_date), class: 'btn btn-sm btn-outline-secondary' do
+  i.fa-arrow-up.fal(style="margin-right: 1rem;")
+  = t('events.show_earlier')
+
+- if @start_date != Date.today
+  | &nbsp;
+  = link_to unit_events_path(@unit, change: 'calendar_list_start_date', to: Date.today), class: 'btn btn-sm btn-outline-secondary' do
+    i.fa-compress.fal(style="margin-right: 1rem;")
+    = t('events.show_less')
+
+br
+br
+
 table.table
   tr.headers
+    th.glyph
+    th.days(style="text-align: right;") Date(s)
     th.name      = t('events.table.name')
-    th.dates     = t('events.table.dates')
-    th.times     = t('events.table.times')
-    th.attendees = t('events.table.attendees')
+    th.dates     Time
+    th.attendees Actions
 
-  = render partial: 'events/index/event', collection: @events
+  - current_month = nil
+  - current_year = nil
+
+  - @events.each do |event|
+    - year = event.starts_at.year
+    - month = event.starts_at.month
+    - if month != current_month
+      tr.month
+        td(colspan="10") = event.starts_at.strftime("#{ current_year == year ? '%B' : '%B %Y' }")
+
+    = render partial: 'events/index/event', locals: { event: event }
+
+    - current_year = year
+    - current_month = month
+
+<a name="end"></a>
+
+br
+= link_to unit_events_path(@unit, change: 'calendar_list_end_date', to: @later_end_date, anchor: 'end'), class: 'btn btn-sm btn-outline-secondary' do
+  i.fa-arrow-down.fal(style="margin-right: 1rem;")
+  = t('events.show_later')
+
+- if @end_date != Date.today + 6.months
+  | &nbsp;
+
+  = link_to unit_events_path(@unit, change: 'calendar_list_end_date', to: 6.months.from_now), class: 'btn btn-sm btn-outline-secondary' do
+    i.fa-compress.fal(style="margin-right: 1rem;")
+    = t('events.show_less')

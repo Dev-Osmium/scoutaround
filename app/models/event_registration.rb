@@ -6,6 +6,7 @@ class EventRegistration < ApplicationRecord
   validates_uniqueness_of :user, scope: :event # prevent duplicate registrations
   delegate :full_name, to: :user
   delegate :unit, to: :event
+  scope :future, -> { joins(:event).where('events.ends_at < current_date') }
 
   def complete?
     completions = event.event_requirements.map { |requirement| requirement.completed_by?(user: self.user) }

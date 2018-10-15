@@ -1,7 +1,0 @@
-
-= @user.achievements.count
-
-table.table
-  - @user.achievements.order(:earned_at).each do |achievement|
-    tr
-      td = achievement.name

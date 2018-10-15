@@ -3,37 +3,59 @@
 - crumbtrail 'Unit Positions'
 
 - content_for :title do
-  .admin.dropdown
-    = link_to 'Add', '#', class: 'btn btn-primary', data: { toggle: 'modal', target: '#unit-position' }
-
   h1 = "Unit Positions"
 
+- content_for :actions do
+  = link_to 'Add', '#', class: 'btn btn-secondary', data: { toggle: 'modal', target: '#unit-position' }
 
-table.table.memberships
-  tr
-    th
-    th Name
-    th Audience
-    th Held By
-    th(style="width: 100px;")
 
-  - @unit_positions.each do |position|
-    tr.position(class="#{position.audience}")
-      td.glyph
-        - if position.audience == 'youth'
-          i.fa-user-circle.fas(title="Youth")
-        - else
-          i.fa-user-circle.fal(title="Adult")
-      td = position.name
-      td = position.audience.titleize
-      td = position.memberships.map { |m| m.user.short_display_name}.join(', ')
-      td.actions
-        span
-          = link_to edit_unit_unit_position_path(@unit, position) do
-            i.fa-pencil.fal
-          | &nbsp;&nbsp;
-          = link_to unit_unit_position_path(@unit, position), method: :delete do
-            i.fa-trash-alt.fal
+ul.nav.nav-tabs
+  li.nav-item
+    a.nav-link.active(href='#youth' data-toggle='tab') Youth
+  li.nav-item
+    a.nav-link(href='#adult' data-toggle='tab') Adult
+
+.tab-content
+  #youth.tab-pane.active
+    br
+    table.table.memberships
+      tr
+        th Name
+        th Held By
+        th(style="width: 100px;")
+
+      - @unit_positions.youth.each do |position|
+        tr.position(class="#{position.audience}")
+          td = position.name
+          td = position.memberships.map { |m| m.user.short_display_name}.join(', ')
+          td.actions
+            span
+              = link_to edit_unit_unit_position_path(@unit, position) do
+                i.fa-pencil.fal
+              | &nbsp;&nbsp;
+              = link_to unit_unit_position_path(@unit, position), method: :delete do
+                i.fa-trash-alt.fal
+
+  #adult.tab-pane.fade
+    br
+    table.table.memberships
+          tr
+            th Name
+            th Held By
+            th(style="width: 100px;")
+
+          - @unit_positions.adult.each do |position|
+            tr.position(class="#{position.audience}")
+              td = position.name
+              td = position.memberships.map { |m| m.user.short_display_name}.join(', ')
+              td.actions
+                span
+                  = link_to edit_unit_unit_position_path(@unit, position) do
+                    i.fa-pencil.fal
+                  | &nbsp;&nbsp;
+                  = link_to unit_unit_position_path(@unit, position), method: :delete do
+                    i.fa-trash-alt.fal
+
 
 #unit-position.modal
   .modal-dialog

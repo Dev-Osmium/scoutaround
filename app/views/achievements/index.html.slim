@@ -4,7 +4,7 @@
 - if params[:reload] == 'true'
   #requirements
     ol.requirements
-      = render partial: 'requirements/show/requirement', collection: @next_rank.requirements, locals: { include_checkboxes: true }
+      = render partial: 'achievements/requirement', collection: @next_rank.requirements, locals: { include_checkboxes: true }
 
 - else
   - crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_path(@unit)
@@ -17,5 +17,8 @@
     h1 = @user.full_name
     p Current rank: #{ @user&.rank&.name }
 
-  = render partial: 'achievements/rank_progress' if @view == 'rank_progress'
-  = render partial: 'achievements/resume' if @view == 'resume'
+  - case @view
+  - when 'resume'
+    = render partial: 'achievements/resume' if @view == 'resume'
+  - else
+    = render partial: 'achievements/rank_progress' if @view == 'rank_progress'

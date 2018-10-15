@@ -1,0 +1,28 @@
+h1 = @event.name
+
+ul
+  - if @event.attendances.count.positive?
+    - @event.attendances.each do |attendance|
+      li = attendance.user.short_name
+
+  - else
+    = form_tag unit_event_attendances_path(@unit, @event) do
+      - if @event.require_registration
+        - @event.event_registrations.each do |registration|
+          li
+            = check_box_tag 'user_id[]', registration.user.id
+            = registration.user.short_name
+
+      - else
+        - @unit.memberships.each do |membership|
+          li
+            = check_box_tag 'user_id[]', membership.user.id
+            = membership.user.short_name
+
+      br
+      br
+
+      .form-group
+        = submit_tag 'Record Attendance', class: 'btn btn-primary'
+        span.or or
+        = link_to t('cancel'), unit_event_path(@unit, @event), class: 'cancel'

@@ -2,7 +2,6 @@
 - crumbtrail t('documents.title')
 
 - content_for :title do
-  = render 'document_library_items/admin' if @current_user_is_admin
   h1 = t('documents.title')
 
 - if @document_library_items.count.zero?
@@ -12,11 +11,20 @@
     = link_to t('documents.cta'), new_unit_document_library_item_path(@unit)
     |.
 
-ul.documents
-  - @document_library_items.each do |document_library_item|
-    li
-      = link_to rails_blob_path(document_library_item.document) do
-        - if document_library_item.document.previewable?
-          = image_tag document_library_item.document.preview(resize: '200x200')
-        .name
-          = document_library_item.name
+.row
+  .col-md-9
+    ul.documents
+      - @document_library_items.each do |document_library_item|
+        li
+          - case document_library_item.type
+          - when 'LibraryFile'
+            = link_to rails_blob_path(document_library_item.document) do
+              i.fa-file.fal
+              = document_library_item.name
+          - when 'LibraryFolder'
+            = link_to unit_document_library_item_path(@unit, document_library_item) do
+              i.fa-folder.fal
+              = document_library_item.name
+
+  .col-md-3
+    = render 'document_library_items/admin' if @current_user_is_admin

@@ -2,14 +2,17 @@
 - crumbtrail t('advancement.title')
 
 - content_for :title do
-  h1 = UnitPresenter.unit_display_name(@unit)
-  h4 = t('advancement.title')
+  h1 = t('advancement.title')
 
-p
-  = link_to 'Roster View', unit_achievements_path(@unit, view: :roster)
-  | &nbsp;/&nbsp;
-  = link_to 'Pending Awards', unit_achievements_path(@unit, view: :pending)
-  | &nbsp;/&nbsp;
-  = link_to 'Shopping List', unit_achievements_path(@unit, view: :shopping_list)
+- content_for :actions do
+  .btn-group(role='group')
+    = link_to unit_achievements_path(@unit, view: :roster), class: 'btn btn-secondary', id: 'toggle_roster', title: 'Roster view', data: { toggle: 'tooltip' } do
+      i.fal.fa-users
+
+    = link_to unit_achievements_path(@unit, view: :pending), class: 'btn btn-secondary', id: 'toggle_pending', title: 'Pending view', data: { toggle: 'tooltip' } do
+      i.fal.fa-inbox
+
+    = link_to unit_achievements_path(@unit, view: :shopping_list), class: 'btn btn-secondary', id: 'toggle_shopping_list', title: 'Shopping list view', data: { toggle: 'tooltip' } do
+      i.fal.fa-shopping-cart
 
 = render partial: "units/achievements/#{ @view }"

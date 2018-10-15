@@ -1,12 +1,35 @@
-h3 Unawarded Achievements
+= form_tag unit_achievement_path(@unit, :all), method: :patch do
+  h3 Unawarded Achievements
 
-table.table
-  - @unit.achievements.awardable.unawarded.joins(:user).order('users.first_name', 'users.last_name').group_by(&:user_id).each do |user_id, achievements|
-    - user = User.find(user_id)
-    - membership = @unit.membership_for(user: user)
-    tr.section-heading
-      td(colspan="10") = link_to user.full_name, unit_membership_achievements_path(@unit, membership), title: "View #{ user.first_name }'s advancement record"
-    - achievements.each do |achievement|
-      tr
-        td = achievement.name
-        td = AchievementPresenter.type(achievement)
+  table.table
+    - @unit.achievements.awardable.earned.unawarded.joins(:user).order('users.first_name', 'users.last_name').group_by(&:user_id).each do |user_id, achievements|
+      - user = User.find(user_id)
+      - membership = @unit.membership_for(user: user)
+      tr.section-heading
+        td(colspan="10") = link_to user.preferred_name, unit_membership_achievements_path(@unit, membership), title: "View #{ user.first_name }'s advancement record"
+      - achievements.each do |achievement|
+        tr
+          td
+            = check_box_tag "achievement[id][]", achievement.id, true
+            = achievement.name
+          td = AchievementPresenter.type(achievement)
+
+  = button_tag t('achievements.award_checked'), id: 'award_checked_button', class: 'btn btn-primary', data: { toggle: 'modal', target: '#awarding' }
+
+  #awarding.modal
+    .modal-dialog.modal-lg
+      .modal-content
+        = form_tag url: unit_achievements_path(@unit)
+          .modal-header
+            h5.modal-title Award Achievements
+            button.close(data-dismiss="modal")
+              span &times;
+
+          .modal-body
+            .form-group
+              = label_tag :awarded_at
+              = text_field_tag :awarded_at, Date.today.to_formatted_s(:scoutaround), class: 'form-control datepicker'
+
+          .modal-footer
+            button.btn.btn-secondary(data-dismiss="modal") = t('cancel')
+            = submit_tag 'Award', class: 'btn btn-primary'

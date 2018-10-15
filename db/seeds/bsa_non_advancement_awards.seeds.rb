@@ -33,4 +33,4 @@ NonAdvancementAward.where(program_code: 'bsa', name: 'Religion in Life').first_o
 NonAdvancementAward.where(program_code: 'bsa', name: 'Light of God').first_or_create
 NonAdvancementAward.where(program_code: 'bsa', name: 'Good Life').first_or_create
 
-puts "BSA non-advancement awards: #{NonAdvancementAward.count}"
+print "BSA non-advancement awards: #{NonAdvancementAward.count}\n"
