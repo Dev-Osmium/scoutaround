@@ -25,6 +25,7 @@ class EventType
       EventType.new(id: 'swimming',          name: 'Swimming'),
       EventType.new(id: 'hiking',            name: 'Hiking'),
       EventType.new(id: 'training',          name: 'Training'),
+      EventType.new(id: 'no_event',          name: 'No Meeting (skip)'),
     ]
   end
 end

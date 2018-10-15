@@ -80,6 +80,7 @@ module ApplicationHelper
       community_service:  'hands-helping',
       training:           'certificate',
       swimming:           'swimmer',
+      no_event:           'ban',
     }
 
     map[event_type.to_sym] || 'calendar'
