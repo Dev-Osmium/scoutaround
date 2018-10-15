@@ -24,6 +24,7 @@ class EventType
       EventType.new(id: 'afloat',            name: 'Boat or Raft'),
       EventType.new(id: 'swimming',          name: 'Swimming'),
       EventType.new(id: 'hiking',            name: 'Hiking'),
+      EventType.new(id: 'training',          name: 'Training'),
     ]
   end
 end
