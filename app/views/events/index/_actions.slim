@@ -1,22 +1,23 @@
 - content_for :actions do
-  = link_to 'Add an Event', '#new', class: 'btn btn-primary', data: { toggle: 'modal' } if @current_user_is_admin
+  #actions
+    = link_to 'Add an Event', '#new', class: 'btn btn-primary', data: { toggle: 'modal' } if @current_user_is_admin
 
-  |&nbsp;
+    |&nbsp;
 
-  span
-    = link_to 'View', '#', class: 'btn btn-outline-secondary dropdown-toggle', data: { toggle: 'dropdown' }
+    span
+      = link_to 'View', '#', class: 'btn btn-outline-secondary dropdown-toggle', data: { toggle: 'dropdown' }
 
-    .dropdown-menu
-      = link_to 'Calendar', unit_events_path(@unit, view: 'calendar'), class: 'dropdown-item'
-      = link_to 'List', unit_events_path(@unit, view: 'list'), class: 'dropdown-item'
-      = link_to 'Subscribe to feed', unit_events_path(@unit, format: 'ics'), class: 'dropdown-item'
+      .dropdown-menu
+        = link_to 'Calendar', unit_events_path(@unit, view: 'calendar'), class: 'dropdown-item'
+        = link_to 'List', unit_events_path(@unit, view: 'list'), class: 'dropdown-item'
+        = link_to 'Subscribe to feed', unit_events_path(@unit, format: 'ics'), class: 'dropdown-item'
 
-      - if @current_user_is_admin
-        .dropdown-divider
-        - if @include_unpublished
-          = link_to 'Hide unpublished events', unit_events_path(@unit, change: 'calendar_include_unpublished', to: 'no'),  class: 'dropdown-item'
-        - else
-          = link_to 'Show unpublished events', unit_events_path(@unit, change: 'calendar_include_unpublished', to: 'yes'), class: 'dropdown-item'
+        - if @current_user_is_admin
+          .dropdown-divider
+          - if @include_unpublished
+            = link_to 'Hide unpublished events', unit_events_path(@unit, change: 'calendar_include_unpublished', to: 'no'),  class: 'dropdown-item'
+          - else
+            = link_to 'Show unpublished events', unit_events_path(@unit, change: 'calendar_include_unpublished', to: 'yes'), class: 'dropdown-item'
 
 javascript:
   $(function () {

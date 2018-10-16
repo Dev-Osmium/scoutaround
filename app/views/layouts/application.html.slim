@@ -54,12 +54,13 @@ html
           .col-md-12
             = yield :banner
 
-      .row
-        .col-md-7
-          = yield :title
+      header#inner
+        .row
+          .col-md-7
+            = yield :title
 
-        .col-md-5(style="text-align:right; float: right;")
-          = yield :actions
+          .col-md-5(style="text-align:right; float: right;")
+            = yield :actions
 
       .row
 
@@ -107,3 +108,15 @@ html
           content: "Because you have admin permissions for this unit, you're able to access this admin-only view. The red line tells you you're in an admin-only area."
         }).popover('show');
       });
+
+javascript:
+  // $(window).scroll(function() {
+  //   var scrollTop = $(this).scrollTop();
+  //   var innerHeader = $('header#inner');
+  //   var innerHeaderTop = innerHeader.scrollTop();
+    
+  //   $('#pupu').text(innerHeaderTop);
+
+  //   if (innerHeaderTop < 100) {
+  //   }
+  // });

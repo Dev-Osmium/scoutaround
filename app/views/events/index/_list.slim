@@ -47,3 +47,14 @@ br
   = link_to unit_events_path(@unit, change: 'calendar_list_end_date', to: 6.months.from_now), class: 'btn btn-sm btn-outline-secondary' do
     i.fa-compress.fal(style="margin-right: 1rem;")
     = t('events.show_less')
+
+// javascript:
+//   $(window).scroll(function() {
+//     var scrollTop = $(this).scrollTop();
+
+//     if (scrollTop > 100) {
+//       $('#actions').css('position', 'fixed');
+//     } else {
+//       $('#actions').css('position', 'relative');
+//     }
+//   });
