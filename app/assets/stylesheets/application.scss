@@ -949,6 +949,9 @@ body.events.show {
   }
 }
 
+//
+// mobile
+//
 @media only screen and (max-width: 800px) {
   main {
     border-radius: 0;
@@ -997,7 +1000,17 @@ body.events.show {
       display: block !important;
     }
   }
-}
+
+  td.glyph {
+    display: none;
+  }
+
+  span.theme {
+    display: block;
+    margin-left: 0;
+    font-weight: 400;
+  }
+} /* mobile */
 
 input.error {
   border-color: $red;
