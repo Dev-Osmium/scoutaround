@@ -17,9 +17,8 @@ tr.event(class="#{ (event.event_type || '').underscore } #{ 'unpublished' unless
           - if event.past?
             i.fa-check.far(style="margin-right: 0.5rem;")
           = event.name
+          span.theme = event.theme
           = " (unpublished)" unless event.published
-        .dates
-          = e.times
 
     td.dates.expendable = e.times
     td.attendees.expendable = event.event_registrations.count if event.require_registration

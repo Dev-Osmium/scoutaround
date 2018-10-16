@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_13_112454) do
+ActiveRecord::Schema.define(version: 2018_10_15_120824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -150,6 +150,7 @@ ActiveRecord::Schema.define(version: 2018_10_13_112454) do
     t.integer "minimum_age"
     t.boolean "published", default: false
     t.string "event_type"
+    t.string "theme"
   end
 
   create_table "guardianships", force: :cascade do |t|

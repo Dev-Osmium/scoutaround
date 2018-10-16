@@ -29,6 +29,10 @@
           .col-md-3 = f.label :event_type
           .col-md-9 = f.select :event_type, EventType.all.collect { |t| [t.name, t.id] }, {}, class: 'form-control'
 
+      .form-group
+        .row
+          .col-md-3 = f.label :theme
+          .col-md-9 = f.text_field :theme, class: 'form-control'
 
       .form-group
         .row
@@ -72,7 +76,7 @@
             = f.label :description
 
           .col-md-9
-            = f.trix_editor :description, class: 'form-control'
+            = f.trix_editor :description
 
       .form-group
         .row
