@@ -34,7 +34,7 @@ RSpec.feature "Advancement features", :type => :feature do
       expect(page).to have_current_path(unit_achievements_path(@unit))
     end
 
-    it 'displays the shoppnig list page' do
+    it 'displays the shopping list page' do
       visit unit_achievements_path(@unit, view: 'shopping_list')
     end
 

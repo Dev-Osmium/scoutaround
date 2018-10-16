@@ -16,6 +16,6 @@ module Scoutaround
     # -- all .rb files in that directory are automatically loaded.
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :forbidden
     config.autoload_paths += %W(#{config.root}/app/notifiers)
+    # config.active_record.sqlite3.represent_boolean_as_integer = true
   end
 end
-

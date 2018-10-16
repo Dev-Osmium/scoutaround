@@ -12,7 +12,8 @@ default: &default
   timeout: 5000
 
 development:
-  <<: *default
+  adapter: postgresql
+  encoding: unicode
   host: <%= ENV.fetch("DEV_DB_HOST") %>
   database: <%= ENV.fetch("DEV_DB_DATABASE") %>
   username: <%= ENV.fetch("DEV_DB_USERNAME") %>

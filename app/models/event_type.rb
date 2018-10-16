@@ -24,6 +24,9 @@ class EventType
       EventType.new(id: 'afloat',            name: 'Boat or Raft'),
       EventType.new(id: 'swimming',          name: 'Swimming'),
       EventType.new(id: 'hiking',            name: 'Hiking'),
+      EventType.new(id: 'training',          name: 'Training'),
+      EventType.new(id: 'no_event',          name: 'No Meeting (skip)'),
+      EventType.new(id: 'winter',            name: 'Winter Activity'),
     ]
   end
 end
