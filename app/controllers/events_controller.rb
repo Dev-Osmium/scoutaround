@@ -28,6 +28,8 @@ class EventsController < UnitContextController
       @events = @unit.events
     end
 
+    @body_classes = [@view]
+
     @events = @events.published unless @include_unpublished
 
     # for modal

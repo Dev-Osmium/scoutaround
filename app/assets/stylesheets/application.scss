@@ -953,6 +953,38 @@ body.events.show {
 // mobile
 //
 @media only screen and (max-width: 800px) {
+  body.events.index.list .content {
+    padding-left:  0;
+    padding-right: 0;
+  }
+
+  table.event-list {
+    tr {
+      border-left-width: 15px;
+    }
+
+    tr.month td {
+      padding-left: 15px;
+    }
+
+    tr.event td.dates {
+      font-weight: 700;
+    }
+  }
+  // table.wall-to-wall {
+  //   margin-left: -15px;
+  //   margin-right: -30px;
+  //   width: 100%;
+
+  //   tr {
+  //     border-left-width: 16px;
+  //   }
+  // }
+
+  h1 {
+    font-size: 2rem;
+  }
+
   main {
     border-radius: 0;
   }
@@ -999,10 +1031,6 @@ body.events.show {
     li {
       display: block !important;
     }
-  }
-
-  td.glyph {
-    display: none;
   }
 
   span.theme {

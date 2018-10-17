@@ -3,7 +3,7 @@ tr.event(class="#{ (event.event_type || '').underscore } #{ 'unpublished' unless
     td.glyph(style="text-align: center;")
       i.fal(class="fa-#{ event_type_glyph_name(event.event_type) }")
 
-    td(style="text-align: right;")
+    td.dates(style="text-align: right;")
       - if event.starts_at.day == event.ends_at.day
         = "#{ event.starts_at.strftime('%-d') }"
       - elsif event.starts_at.month != event.ends_at.month
