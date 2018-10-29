@@ -17,11 +17,11 @@
       - @document_library_items.each do |document_library_item|
         li
           - case document_library_item.type
-          - when 'LibraryFile'
+          - when 'DocumentLibraryFile'
             = link_to rails_blob_path(document_library_item.document) do
               i.fa-file.fal
               = document_library_item.name
-          - when 'LibraryFolder'
+          - when 'DocumentLibraryFolder'
             = link_to unit_document_library_item_path(@unit, document_library_item) do
               i.fa-folder.fal
               = document_library_item.name

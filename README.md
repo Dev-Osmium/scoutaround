@@ -37,6 +37,8 @@ brew install redis
 
 This presumes you have Ruby 2.4.2, Rails 5.1.6 or higher, and PostgreSQL installed. [RVM](http://rvm.io) is a good way to deal with Ruby versioning.
 
+Alternately, use [ElephantSQL](https://elephantsql.com) for a shared dev database.
+
 Once done:
 
 ```

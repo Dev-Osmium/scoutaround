@@ -1,2 +1,0 @@
-class LibraryFolder < DocumentLibraryItem
-end

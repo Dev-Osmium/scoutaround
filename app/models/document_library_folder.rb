@@ -1,0 +1,2 @@
+class DocumentLibraryFolder < DocumentLibraryItem
+end
