@@ -22,6 +22,12 @@ class DocumentLibraryItemsController < UnitContextController
     end
   end
 
+  def delete
+    parent = @document_library_item.parent
+    @document_library_item.destroy
+    redirect_to parent.present? ? unit_document_library_item_path(@unit, parent) : unit_document_library_items_path(@unit)
+  end
+
   private
 
   def find_document_library_item

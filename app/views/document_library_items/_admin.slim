@@ -9,7 +9,7 @@
 /         i.fa-tree.fal
 /         = t('documents.add')
 
-- folder = @unit.document_library_items.new(type: 'LibraryFolder')
+- new_folder = @unit.document_library_items.new(type: 'DocumentLibraryFolder')
 
 .actions
   ul
@@ -21,7 +21,7 @@
 #new_folder.modal
   .modal-dialog
     .modal-content
-      = form_for [@unit.becomes(Unit), folder.becomes(DocumentLibraryItem)] do |f|
+      = form_for [@unit.becomes(Unit), new_folder.becomes(DocumentLibraryItem)] do |f|
         .modal-header
           h5.modal-title New Folder
           button.close(data-dismiss="modal")

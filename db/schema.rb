@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_15_120824) do
+ActiveRecord::Schema.define(version: 2018_10_29_164900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 2018_10_15_120824) do
     t.datetime "updated_at", null: false
     t.string "type"
     t.integer "parent_id"
+    t.integer "author_id"
   end
 
   create_table "event_registrations", force: :cascade do |t|

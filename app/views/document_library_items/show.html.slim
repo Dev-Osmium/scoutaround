@@ -1,3 +1,30 @@
+- crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_events_path(@unit)
+- crumbtrail link_to t('documents.title'), unit_document_library_items_path(@unit)
+- crumbtrail @document_library_item.name
+
+/ - case document_library_item.type
+/ - when 'DocumentLibraryFile'
+/   = link_to rails_blob_path(document_library_item.document) do
+/     i.fa-file.fal
+/     = document_library_item.name
+/ - when 'DocumentLibraryFolder'
+/   = link_to unit_document_library_item_path(@unit, document_library_item) do
+/     i.fa-folder.fal
+/     = document_library_item.name
+
 h1 = @document_library_item.name
 
-= link_to t('documents.download'), rails_blob_path(@document_library_item.document, disposition: 'attachment')
+
+= @document_library_item.document.service_url
+
+.row
+  .col-md-8
+    = pdfjs_viewer pdf_url: rails_blob_path(@document_library_item.document), style: :full
+
+  .col-md-4
+    ul
+      li = "Uploaded by #{ @document_library_item.author.short_display_name } #{ time_ago_in_words(@document_library_item.created_at) } ago"
+
+    ul
+      li = link_to t('documents.download'), rails_blob_path(@document_library_item.document, disposition: 'attachment')
+      li = link_to 'Delete', unit_document_library_item_path(@unit, @document_library_item), method: :delete, confirm: 'Are you sure?'
