@@ -45,7 +45,6 @@ RSpec.feature "Advancement features", :type => :feature do
 
       # Tommy's Scout rank  hasn't yet been awarded
       it 'includes unawarded member' do
-        save_and_open_page
         expect(page).to have_content(@tommy.preferred_name)
       end
 

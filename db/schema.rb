@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_29_164900) do
+ActiveRecord::Schema.define(version: 2018_10_30_183915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -83,7 +83,6 @@ ActiveRecord::Schema.define(version: 2018_10_29_164900) do
 
   create_table "document_library_items", force: :cascade do |t|
     t.string "name"
-    t.integer "unit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
@@ -264,6 +263,7 @@ ActiveRecord::Schema.define(version: 2018_10_29_164900) do
     t.string "time_zone"
     t.date "subscription_expires_at"
     t.integer "subscription_plan_id"
+    t.integer "root_document_library_folder_id"
   end
 
   create_table "user_preferences", force: :cascade do |t|

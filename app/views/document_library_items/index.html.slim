@@ -14,8 +14,13 @@
 .row
   .col-md-9
     ul.documents
-      - @document_library_items.each do |document_library_item|
-        li = link_to document_library_item.name, unit_document_library_item_path(@unit, document_library_item)
+      = render partial: 'item', collection: @document_library_items
 
   .col-md-3
     = render 'document_library_items/admin' if @current_user_is_admin
+
+css:
+  ul.documents svg {
+    display: inline-block;
+    width: 1rem !important;
+  }

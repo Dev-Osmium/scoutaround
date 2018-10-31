@@ -1,0 +1,4 @@
+li
+  = link_to unit_document_library_item_path(@unit, item) do
+    i.fas(class="#{ icon_for_document_library_item(item) }")
+    = item.name

@@ -9,11 +9,11 @@
 /         i.fa-tree.fal
 /         = t('documents.add')
 
-- new_folder = @unit.document_library_items.new(type: 'DocumentLibraryFolder')
+- new_folder = DocumentLibraryItem.new(type: 'DocumentLibraryFolder', parent_id: @document_library_item.id)
 
 .actions
   ul
-  	li = link_to 'Upload', new_unit_document_library_item_path(@unit), class: 'btn btn-primary'
+  	li = link_to 'Upload', new_unit_document_library_item_path(@unit, parent_id: @document_library_item), class: 'btn btn-primary'
   	li = link_to '#new_folder', data: { toggle: 'modal' } do
   	  i.fa-folder-plus.fas
   	  | New Folder
@@ -28,6 +28,8 @@
             span &times;
         .modal-body
           .form-group
+            = f.hidden_field :parent_id
+            = f.hidden_field :type
             = label_tag :name
             = f.text_field :name, class: 'form-control'
 

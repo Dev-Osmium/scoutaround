@@ -1,30 +1,96 @@
-- crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_events_path(@unit)
-- crumbtrail link_to t('documents.title'), unit_document_library_items_path(@unit)
-- crumbtrail @document_library_item.name
+- content_for :title do
+  h1 = @document_library_item.name
 
-/ - case document_library_item.type
-/ - when 'DocumentLibraryFile'
-/   = link_to rails_blob_path(document_library_item.document) do
-/     i.fa-file.fal
-/     = document_library_item.name
-/ - when 'DocumentLibraryFolder'
-/   = link_to unit_document_library_item_path(@unit, document_library_item) do
-/     i.fa-folder.fal
-/     = document_library_item.name
+- if params[:view] || 'none' == 'embed'
+  = pdfjs_viewer pdf_url: rails_blob_path(@document_library_item.document), style: :reduced
 
-h1 = @document_library_item.name
+- elsif @document_library_item.is_a? DocumentLibraryFolder
+  - crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_events_path(@unit)
+  - crumbtrail link_to t('documents.title'), unit_document_library_items_path(@unit)
+  - crumbtrail @document_library_item.name
+
+  .row
+    .col-md-9
+      ul.documents
+        li
+          - if @document_library_item.parent.present?
+            = link_to unit_document_library_item_path(@unit, @document_library_item.parent) do
+              i.fal.fa-level-up
+              | Up one level
+          - else
+            = link_to unit_document_library_items_path(@unit) do
+              i.fal.fa-level-up
+              | Up one level        
+        = render partial: 'item', collection: @document_library_item.children
+
+      = render partial: 'empty_folder' if @document_library_item.children.empty?
+
+    .col-md-3
+      = render 'document_library_items/admin' if @current_user_is_admin
 
 
-= @document_library_item.document.service_url
+- else
 
-.row
-  .col-md-8
-    = pdfjs_viewer pdf_url: rails_blob_path(@document_library_item.document), style: :full
+  - crumbtrail link_to UnitPresenter.unit_display_name(@unit), unit_events_path(@unit)
+  - crumbtrail link_to t('documents.title'), unit_document_library_items_path(@unit)
 
-  .col-md-4
-    ul
-      li = "Uploaded by #{ @document_library_item.author.short_display_name } #{ time_ago_in_words(@document_library_item.created_at) } ago"
+  / crawl up the folder hierarchy
+  - parent = @document_library_item.parent
+  - parents = []
+  - while parent.present?
+    - parents << parent if parent.parent.present?
+    - parent = parent.parent
 
-    ul
-      li = link_to t('documents.download'), rails_blob_path(@document_library_item.document, disposition: 'attachment')
-      li = link_to 'Delete', unit_document_library_item_path(@unit, @document_library_item), method: :delete, confirm: 'Are you sure?'
+  - parents.reverse.each do |folder|
+    - crumbtrail link_to folder.name, unit_document_library_item_path(@unit, folder)
+
+  - crumbtrail @document_library_item.name
+
+  / - case document_library_item.type
+  / - when 'DocumentLibraryFile'
+  /   = link_to rails_blob_path(document_library_item.document) do
+  /     i.fa-file.fal
+  /     = document_library_item.name
+  / - when 'DocumentLibraryFolder'
+  /   = link_to unit_document_library_item_path(@unit, document_library_item) do
+  /     i.fa-folder.fal
+  /     = document_library_item.name
+
+  .row
+    .col-md-8
+    	iframe(style="width: 100%; height: 800px;" src="#{ unit_document_library_item_path(@unit, @document_library_item, view: 'embed') }")
+        
+        / = pdfjs_viewer pdf_url: pdf_url, style: :full
+
+    .col-md-4
+      ul
+        li = link_to 'Back to folder', unit_document_library_item_path(@unit, @document_library_item.parent)
+        
+      ul
+        li = "Uploaded by #{ @document_library_item.author.short_display_name } #{ time_ago_in_words(@document_library_item.created_at) } ago"
+
+      ul
+        li = link_to t('documents.download'), rails_blob_path(@document_library_item.document, disposition: 'attachment')
+        li = link_to 'Move', '#move', data: { toggle: 'modal' }
+        li = link_to 'Delete', unit_document_library_item_path(@unit, @document_library_item), method: :delete, data: { confirm: 'Are you sure?' }
+
+#move.modal
+  .modal-dialog
+    .modal-content
+      = form_for [@unit.becomes(Unit), @document_library_item.becomes(DocumentLibraryItem)] do |f|
+        .modal-header
+          h5.modal-title Move
+          button.close(data-dismiss="modal")
+            span &times;
+        .modal-body
+          .form-group
+            = label_tag :destination
+            = f.collection_select :parent_id, @unit.root_document_library_folder.children.folders, :id, :name, {}, { class: 'form-control' }
+        .modal-footer
+          button.btn.btn-secondary(data-dismiss="modal") = t('cancel')
+          = f.submit 'Send', class: 'btn btn-primary'            
+
+  css:
+    iframe {
+      border: none;
+    }

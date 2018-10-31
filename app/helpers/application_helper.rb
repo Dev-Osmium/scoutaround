@@ -86,4 +86,10 @@ module ApplicationHelper
 
     map[event_type.to_sym] || 'calendar'
   end
+
+  def icon_for_document_library_item(item)
+    return 'fa-folder' if item.is_a? DocumentLibraryFolder
+    return 'fa-file-pdf' if item.document.filename.extension == 'pdf'
+    return 'fa-file'
+  end
 end

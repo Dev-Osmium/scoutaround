@@ -15,6 +15,7 @@ h1 = t('documents.new')
 
       .form-group
         = hidden_field_tag :type, 'DocumentLibraryFile'
+        = hidden_field_tag :parent_id, params[:parent_id]
         = f.submit t('documents.new_cta'), class: 'btn btn-primary'
         |&nbsp;&nbsp;
         = t('or')

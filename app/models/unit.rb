@@ -3,8 +3,8 @@ class Unit < ApplicationRecord
   has_many :event_registrations, through: :events
   has_many :memberships
   has_many :members, -> { where('memberships.active = true') }, through: :memberships, source: 'user'
-  has_many :document_library_items
   has_many :messages, as: :messagable
+  belongs_to :root_document_library_folder, class_name: 'DocumentLibraryFolder'
 
   # when fetching achievements for a unit, we only want those achievements belonging to
   # the same program. For instance, we don't want to show Cub Scout achievements in a
