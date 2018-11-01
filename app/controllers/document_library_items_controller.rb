@@ -11,7 +11,7 @@ class DocumentLibraryItemsController < UnitContextController
   end
 
   def new
-    @document_library_item = DocumentLibraryItem.new(parent_id: params[:parent_id])
+    @new_file = DocumentLibraryFile.new(parent_id: params[:parent_id])
   end
 
   def create

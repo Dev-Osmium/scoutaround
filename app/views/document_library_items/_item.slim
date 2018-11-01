@@ -1,4 +1,7 @@
-li
-  = link_to unit_document_library_item_path(@unit, item) do
-    i.fas(class="#{ icon_for_document_library_item(item) }")
-    = item.name
+tr
+  td
+	  = link_to unit_document_library_item_path(@unit, item) do
+	    i.fas(class="#{ icon_for_document_library_item(item) }")
+	    = item.name
+
+  td = "#{ time_ago_in_words(item.updated_at) } ago"

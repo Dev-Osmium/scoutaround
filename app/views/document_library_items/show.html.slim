@@ -11,16 +11,13 @@
 
   .row
     .col-md-9
-      ul.documents
-        li
-          - if @document_library_item.parent.present?
-            = link_to unit_document_library_item_path(@unit, @document_library_item.parent) do
-              i.fal.fa-level-up
-              | Up one level
-          - else
-            = link_to unit_document_library_items_path(@unit) do
-              i.fal.fa-level-up
-              | Up one level        
+      table.table
+        tr
+          td
+            - if @document_library_item.parent.present?
+              = link_to unit_document_library_item_path(@unit, @document_library_item.parent) do
+                i.fal.fa-level-up
+                | Up one level      
         = render partial: 'item', collection: @document_library_item.children
 
       = render partial: 'empty_folder' if @document_library_item.children.empty?
@@ -65,7 +62,7 @@
     .col-md-4
       ul
         li = link_to 'Back to folder', unit_document_library_item_path(@unit, @document_library_item.parent)
-        
+
       ul
         li = "Uploaded by #{ @document_library_item.author.short_display_name } #{ time_ago_in_words(@document_library_item.created_at) } ago"
 

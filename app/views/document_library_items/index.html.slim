@@ -13,7 +13,10 @@
 
 .row
   .col-md-9
-    ul.documents
+    table.table
+      tr
+        th Name
+        th Modified
       = render partial: 'item', collection: @document_library_items
 
   .col-md-3

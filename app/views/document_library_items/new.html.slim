@@ -3,7 +3,7 @@ h1 = t('documents.new')
 .row
   .col-md-3
   .col-md-6
-    = form_for @document_library_item, url: unit_document_library_items_path(@unit) do |f|
+    = form_for @new_file.becomes(DocumentLibraryItem), url: unit_document_library_items_path(@unit) do |f|
       .form-group
         = f.label :name
         = f.text_field :name, class: 'form-control'
@@ -14,8 +14,8 @@ h1 = t('documents.new')
           = f.label :document, class: 'custom-file-label'
 
       .form-group
-        = hidden_field_tag :type, 'DocumentLibraryFile'
-        = hidden_field_tag :parent_id, params[:parent_id]
+        = f.hidden_field :type
+        = f.hidden_field :parent_id
         = f.submit t('documents.new_cta'), class: 'btn btn-primary'
         |&nbsp;&nbsp;
         = t('or')
