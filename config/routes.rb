@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :units, path: '/' do
     get '/', to: 'announcements#index'
     get '/payments/setup', to: 'stripe#show' # return route for Stripe onboarding
+    get '/events/:event_id/attendance/edit', to: 'attendances#edit', as: 'unit_event_edit_attendance'
 
     resources :events do
       resources :event_registrations,   path: 'registrations'

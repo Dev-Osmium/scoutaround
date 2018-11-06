@@ -1,0 +1,17 @@
+h1 = @event.name
+
+= form_tag unit_event_attendances_path(@unit, @event) do
+  ul.ruled
+    - @members.each do |member|
+      li
+        = check_box_tag 'user_ids[]', member.id, true, id: "user_id_#{ member.id }"
+        = label_tag "user_id_#{ member.id }", member.short_display_name
+
+
+  br
+  br
+
+  .form-group
+    = submit_tag 'Record Attendance', class: 'btn btn-primary'
+    span.or or
+    = link_to t('cancel'), unit_event_path(@unit, @event), class: 'cancel'

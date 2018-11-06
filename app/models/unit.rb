@@ -63,4 +63,8 @@ class Unit < ApplicationRecord
   def subscription_expired?
     self.subscription_expires_at < Date.today
   end
+
+  def document_library_items
+    root_document_library_folder.children
+  end
 end
